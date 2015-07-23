@@ -10,6 +10,8 @@
 
 
 
+echo "$(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
+
 # TODO: put these in config
 data_dir="/mnt/s3/globallit-tabletdata/" 
 extension=".db"

@@ -1,0 +1,20 @@
+#!/bin/bash
+# by Jason Krone for curious learning
+# Date: July 20, 2015
+# automatically mounts and unmounts usb
+# 
+
+echo "action b4: $ACTION" > /usr/lib/udev/test
+
+ACTION=$(expr "$ACTION" : "\([a-zA-Z]\+\).*")
+
+echo "action after: $ACTION" > /usr/lib/udev/test
+
+if [ "$ACTION" = "add" ]; then
+	sudo mount /mnt/usb
+	echo "mounted w/ exit code: $?" > /usr/lib/udev/test
+	/home/pi/scripts/file_mover/file_mover.sh # TODO: put this in config
+else
+	sudo umount /mnt/usb
+	echo "umounted usb w/ exit: $?" > /usr/lib/udev/test
+fi

@@ -1,0 +1,2 @@
+SUBSYSTEMS=="block", KERNEL=="sd[a-h]1", SYMLINK+="usbkey", RUN+="/usr/lib/udev/usbkey"
+SUBSYSTEMS=="block", KERNEL=="sd[a-h]1", ACTION=="remove", RUN+="/usr/lib/udev/usbkey"

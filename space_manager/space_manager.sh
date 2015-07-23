@@ -6,6 +6,9 @@
 # and if there is not, delete files to make room
 #
 
+echo "$(date)" >> /home/pi/RaspberryPi-Server/space_manager/test_sm
+
+
 # TODO: put these in config
 data_dir="/mnt/s3/globallit-tabletdata/" 
 archive_dir="/mnt/s3/tabletdata_archive/"

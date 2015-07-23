@@ -1,4 +1,6 @@
 README
+by Jason Krone for Curious Learning
+
 
 +-----------------------------------------------------------------------------+
 |                          MODULE   OVERVIEW                                  |
