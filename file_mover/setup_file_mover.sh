@@ -36,4 +36,4 @@ sudo chmod 777 /usr/lib/udev/usbkey
 # map the usb symlink to the directory /mnt/usb
 sudo echo "/dev/usbkey	/mnt/usb	vfat	ro,noauto,user,exec	0	0" >> /etc/fstab
 
-
+exit

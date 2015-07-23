@@ -4,11 +4,8 @@
 # automatically mounts and unmounts usb
 # 
 
-echo "action b4: $ACTION" > /usr/lib/udev/test
 
 ACTION=$(expr "$ACTION" : "\([a-zA-Z]\+\).*")
-
-echo "action after: $ACTION" > /usr/lib/udev/test
 
 if [ "$ACTION" = "add" ]; then
 	sudo mount /mnt/usb
