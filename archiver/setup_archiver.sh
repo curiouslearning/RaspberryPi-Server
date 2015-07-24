@@ -9,5 +9,6 @@
 archive_dir="/mnt/s3/tabletdata_archive/"
 
 sudo mkdir "$archive_dir"
+sudo chmod 777 "$archive_dir"
 
 exit

@@ -10,30 +10,30 @@
 # "Detecting USB Pen being plugged in"
 #
 
+backup_dir="/mnt/s3/tabletdata_backups"
 
 # (TODO: pull from config)
-sudo mkdir /mnt/s3/tabletdata_backups
+sudo mkdir "$backup_dir"
+sudo chmod 777 "$backup_dir"
 
 
 # create mounting point for usb 
 sudo mkdir /mnt/usb
+sudo chmod 777 /mnt/usb
 
 
 # new rules for usb node 
 sudo mv 10-usbstick.rules /etc/udev/rules.d/
 
 
+# store/setup script to be run on insertion of usb 
 sudo mkdir /usr/lib/udev/
-
-
-# move script to be run on insertion of usb 
 sudo mv usbkey /usr/lib/udev
-
-
 sudo chmod 777 /usr/lib/udev/usbkey
 
 
 # map the usb symlink to the directory /mnt/usb
-sudo echo "/dev/usbkey	/mnt/usb	vfat	ro,noauto,user,exec	0	0" >> /etc/fstab
+sudo chmod 777 /etc/fstab
+sudo echo "/dev/usbkey	/mnt/usb	vfat	rw,noauto,user,exec	0	0" >> /etc/fstab
 
 exit

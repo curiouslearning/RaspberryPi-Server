@@ -6,7 +6,7 @@
 
 # TODO: pull this from config
 tablet_dir="/mnt/s3/"
-data_dir="globallit-tabletdata/"
+data_dir="/mnt/s3/globallit-tabletdata/"
 
 
 # install apache and php
@@ -25,7 +25,7 @@ sudo chmod 777 /var/www/index.php
 
 # create directory for indexed data
 sudo mkdir "$tablet_dir"
-sudo mkdir "$tablet_dir$data_dir"
-sudo chmod 777 "$tablet_dir$data_dir"
+sudo mkdir "$data_dir"
+sudo chmod 777 "$data_dir"
 
 exit 

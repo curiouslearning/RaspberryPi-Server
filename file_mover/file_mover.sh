@@ -14,29 +14,29 @@ backup_dir="/mnt/s3/tabletdata_backups/"
 
 
 function main() {
+	echo "$(date)" >> /home/pi/RaspberryPi-Server/file_mover/log
+
 	# are there files to move 
 	if [[ $( ls -c "$archive_dir" | wc -l ) -gt 0 ]]; then
-		echo "there are files to move" > /home/pi/scripts/file_mover/log
+		echo "there are files to move" > /home/pi/RaspberryPi-Server/file_mover/log
 
 		# copy archives to usb
-		cp $archive_dir* /mnt/usb/
-
-		echo "tried to cp files" > /home/pi/scripts/file_mover/log
+		sudo cp $archive_dir* /mnt/usb/
 
 		# check success 
 		if [[ $? -eq 0 ]]; then
-			echo "cp sucessful" > /home/pi/scripts/file_mover/log
+			echo "cp sucessful" >> /home/pi/RaspberryPi-Server/file_mover/log
 
 			# move files to backups
-			mv $archive_dir* "$backup_dir" 
+			sudo mv $archive_dir* "$backup_dir" 
 
-			echo "moved archives to backupdir" > /home/pi/scripts/file_mover/log
+			echo "moved archives to backupdir" >> /home/pi/RaspberryPi-Server/file_mover/log
 		else
 			# copy failed
 			exit 1
 		fi
 	else
-		echo "no files to move" > /home/pi/scripts/file_mover/log
+		echo "no files to move" >> /home/pi/RaspberryPi-Server/file_mover/log
 	fi
 	exit 0
 }

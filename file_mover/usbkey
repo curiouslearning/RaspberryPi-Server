@@ -10,7 +10,7 @@ ACTION=$(expr "$ACTION" : "\([a-zA-Z]\+\).*")
 if [ "$ACTION" = "add" ]; then
 	sudo mount /mnt/usb
 	echo "mounted w/ exit code: $?" > /usr/lib/udev/test
-	/home/pi/scripts/file_mover/file_mover.sh # TODO: put this in config
+	/home/pi/RaspberryPi-Server/file_mover/file_mover.sh # TODO: put this in config
 else
 	sudo umount /mnt/usb
 	echo "umounted usb w/ exit: $?" > /usr/lib/udev/test
