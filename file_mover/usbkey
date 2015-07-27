@@ -7,11 +7,35 @@
 
 ACTION=$(expr "$ACTION" : "\([a-zA-Z]\+\).*")
 
-if [ "$ACTION" = "add" ]; then
-	sudo mount /mnt/usb
-	echo "mounted w/ exit code: $?" > /usr/lib/udev/test
-	/home/pi/RaspberryPi-Server/file_mover/file_mover.sh # TODO: put this in config
-else
-	sudo umount /mnt/usb
-	echo "umounted usb w/ exit: $?" > /usr/lib/udev/test
-fi
+source /home/pi/RaspberryPi-Server/config.sh
+
+function main() {
+	if [[ "$ACTION" = "add" ]]; then
+		move_archives_to_usb
+	else
+	# usb is being removed
+		sudo umount "$usb_mnt_dir" 
+		sudo echo "umounted usb w/ exit: $?" >> /usr/lib/udev/test
+	fi
+}
+
+function move_archives_to_usb() {
+	sudo mount "$usb_mnt_dir" 
+	echo "mounted usb" > /usr/lib/udev/test
+
+	if [[ "$?" -eq 0 ]]; then
+		# check that this is a file_mover usb
+		if [[ $( cat /mnt/usb/id ) = "file_mover_usb" ]]; then
+			# TODO: put this in config
+			/home/pi/RaspberryPi-Server/file_mover/file_mover.sh 
+		else
+			# usb is not meant to store files
+			echo "usb did not have correct id" >> /usr/lib/udev/test
+			sudo umount "$usb_mnt_dir"	
+		fi
+	else
+		echo "problem mounting usb" >> /usr/lib/udev/test
+	fi
+}
+
+main

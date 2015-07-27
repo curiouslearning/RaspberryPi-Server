@@ -8,16 +8,12 @@
 
 echo "$(date)" >> /home/pi/RaspberryPi-Server/space_manager/test_sm
 
-
-# TODO: put these in config
-data_dir="/mnt/s3/globallit-tabletdata/" 
-archive_dir="/mnt/s3/tabletdata_archive/"
-backup_dir="/mnt/s3/tabletdata_backups/"
+source /home/pi/RaspberryPi-Server/config.sh
 
 
 function main() {
     # see if there is sufficent space i.e. at least 1GB free
-	local space_needed=$(python3 /home/pi/scripts/space_manager/available_space.py)
+	local space_needed=$(python3 ~/RaspberryPi-Server/space_manager/available_space.py)
 	local success_making_space=0 # 0 indicates success
 
 	# delete files until there is sufficent free space on Pi
@@ -26,7 +22,7 @@ function main() {
 		# capture exit status of make_space
 		success_making_space=$?
 		# see if we still need more space
-		space_needed=$(python3 ~/scripts/space_manager/available_space.py)
+		space_needed=$(python3 ~/RaspberryPi-Server/space_manager/available_space.py)
 	done
 	exit
 }
@@ -72,7 +68,7 @@ function num_files_in_dir() {
 # rets: nothing
 # TODO: log deleted file info so we know what is gone
 function delete_oldest_file() {
-	file=$( ls -tr "$1" | head -n 1 )
+	local file=$( ls -tr "$1" | head -n 1 )
 	echo "deleting file $1$file"
 	sudo rm "$1$file"
 }

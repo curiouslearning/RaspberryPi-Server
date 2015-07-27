@@ -4,10 +4,7 @@
 # Installs php and apache2 on Pi for webserver
 #
 
-# TODO: pull this from config
-tablet_dir="/mnt/s3/"
-data_dir="/mnt/s3/globallit-tabletdata/"
-
+source /home/pi/RaspberryPi-Server/config.sh
 
 # install apache and php
 sudo apt-get install apache2 -y

@@ -5,13 +5,7 @@
 # Moves archived tablet data to USB stick, then adds moved archives to backups
 #
 
-# TODO: put in config
-usb_mount_point="/mnt/usb/"
-# TODO: put in config
-archive_dir="/mnt/s3/tabletdata_archive/"
-# TODO: put in config
-backup_dir="/mnt/s3/tabletdata_backups/"
-
+source /home/pi/RaspberryPi-Server/config.sh
 
 function main() {
 	echo "$(date)" >> /home/pi/RaspberryPi-Server/file_mover/log

@@ -12,10 +12,9 @@
 
 echo "$(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
 
-# TODO: put these in config
-data_dir="/mnt/s3/globallit-tabletdata/" 
+# get variables from config
+source /home/pi/RaspberryPi-Server/config.sh
 extension=".db"
-archive_dir="/mnt/s3/tabletdata_archive/"
 
 # purp: creates a compressed archive of all files with the given extension
 # in the directory specified and then stores the created archive in the 
@@ -33,8 +32,10 @@ function archive_dir() {
         # remove archived files if tar was successful
         if [[ "$?" -eq 0 ]]; then
             sudo rm $1*$2
+			echo "was able to archive files"
             return 0 
         else
+			echo "was not able to archive files"
             # Error tar was unsuccessful could not create archive
             return 1
         fi

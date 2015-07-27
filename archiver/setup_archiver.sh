@@ -5,8 +5,7 @@
 # Creates the directory to be used by archiving script
 #
 
-# TODO: pull this from config
-archive_dir="/mnt/s3/tabletdata_archive/"
+source /home/pi/RaspberryPi-Server/config.sh
 
 sudo mkdir "$archive_dir"
 sudo chmod 777 "$archive_dir"
