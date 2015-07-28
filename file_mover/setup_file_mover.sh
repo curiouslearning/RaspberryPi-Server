@@ -36,9 +36,9 @@ success=$(($success|$?))
 # store/setup script to be run on insertion of usb 
 sudo mkdir /usr/lib/udev/
 success=$(($success|$?))
-sudo mv usbkey /usr/lib/udev/
+sudo mv usbkey.sh /usr/lib/udev/
 success=$(($success|$?))
-sudo chmod 777 /usr/lib/udev/usbkey
+sudo chmod 777 /usr/lib/udev/usbkey.sh
 success=$(($success|$?))
 
 
