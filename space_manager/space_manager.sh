@@ -9,6 +9,7 @@
 echo "$(date)" >> /home/pi/RaspberryPi-Server/space_manager/test_sm
 
 source /home/pi/RaspberryPi-Server/config.sh
+space_manager_log="/home/pi/RaspberryPi-Server/space_manager/space_manager_log.txt"
 
 
 function main() {
@@ -38,12 +39,15 @@ function make_space() {
 	if [[ $( num_files_in_dir "$backup_dir" ) -gt 0 ]]; then
 		# delete the oldest backup
 		delete_oldest_file "$backup_dir"
+		exit_status=$(($exit_status|$?))
 	elif [[ $( num_files_in_dir "$archive_dir" ) -gt 0 ]]; then
 		# delete the oldest archive
 		delete_oldest_file "$archive_dir"
+		exit_status=$(($exit_status|$?))
 	elif [[ $( num_files_in_dir "$data_dir" ) -gt 0 ]]; then
 		# delete the oldest .db file 
 		delete_oldest_file "$data_dir"
+		exit_status=$(($exit_status|$?))
 	else 
 		echo "nothing to delete"
 		# there was some type of failure
@@ -62,15 +66,27 @@ function num_files_in_dir() {
 }
 
 
-# purp: deletes the file/archive with the oldest last modified 
+# purp: deletes the file/archive with the oldest last modified and
+# logs info on the file deleted in space_manager_log
 # date in the given directory
 # args: path to directory containing files
-# rets: nothing
-# TODO: log deleted file info so we know what is gone
+# rets: 0 if successful 
 function delete_oldest_file() {
+	local success=0
+
+	# get the oldest file
 	local file=$( ls -tr "$1" | head -n 1 )
 	echo "deleting file $1$file"
 	sudo rm "$1$file"
+
+	success=$?
+	if [[ success -eq 0 ]]; then
+		echo "deleted file: $1$file to make space" >> "$space_manager_log"
+	else
+		echo "problem deleting file: $1$file" >> "$space_manager_log"
+	fi
+
+	return $success
 }
 
 main
