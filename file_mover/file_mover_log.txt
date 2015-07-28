@@ -1,0 +1,6 @@
+there are files to move
+cp sucessful
+moved archives to backupdir
+Tue Jul 28 22:53:39 UTC 2015
+Tue Jul 28 22:54:23 UTC 2015
+Tue Jul 28 23:10:09 UTC 2015

@@ -30,7 +30,7 @@ function log_setup_success() {
 	if [[ $1 -eq 0 ]]; then
 		echo "success setting up $2" >> "$build_log" 
 	else
-		echo "problem setting up $2" >> "$build_log"
+		echo "failure setting up $2" >> "$build_log"
 	fi
 }
 

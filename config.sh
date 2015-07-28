@@ -13,9 +13,7 @@ archive_dir="/mnt/s3/tabletdata_archive/"
 
 
 # file_mover.sh
-usb_mount_point="/mnt/usb/"
+usb_mnt_point="/mnt/usb/"
 backup_dir="/mnt/s3/tabletdata_backups/"
+file_mover_log="/home/pi/RaspberryPi-Server/file_mover/file_mover_log.txt"
 
-
-# setup_file_mover.sh
-usb_mnt_dir="/mnt/usb/"

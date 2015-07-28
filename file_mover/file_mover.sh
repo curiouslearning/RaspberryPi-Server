@@ -8,31 +8,38 @@
 source /home/pi/RaspberryPi-Server/config.sh
 
 function main() {
-	echo "$(date)" >> /home/pi/RaspberryPi-Server/file_mover/log
+	echo "$(date)" >> "$file_mover_log"
+	success=0
 
-	# are there files to move 
+	# are there files to move ?
 	if [[ $( ls -c "$archive_dir" | wc -l ) -gt 0 ]]; then
-		echo "there are files to move" > /home/pi/RaspberryPi-Server/file_mover/log
-
 		# copy archives to usb
-		sudo cp $archive_dir* /mnt/usb/
+		sudo cp $archive_dir* "$usb_mnt_point" 
+		success=$?
+		log_success $success "copying files to usb"
 
-		# check success 
-		if [[ $? -eq 0 ]]; then
-			echo "cp sucessful" >> /home/pi/RaspberryPi-Server/file_mover/log
-
+		# check success copying
+		if [[ $success -eq 0 ]]; then
 			# move files to backups
 			sudo mv $archive_dir* "$backup_dir" 
-
-			echo "moved archives to backupdir" >> /home/pi/RaspberryPi-Server/file_mover/log
-		else
-			# copy failed
-			exit 1
+			success=$?
+			log_success $success "moving files to backup dir"
 		fi
-	else
-		echo "no files to move" >> /home/pi/RaspberryPi-Server/file_mover/log
 	fi
-	exit 0
+	exit $success 
+}
+
+
+# purp: if arg1 is 0, prints success message with subject given in arg2
+# otherwise, if arg1 is non-zero, prints failure message with given subject
+# args: arg1 - exit_value, arg2 - subject of message
+# rets: nothing
+function log_success() {
+	if [[ $1 -eq 0 ]]; then
+		echo "success $2" >> "$file_mover_log" 
+	else
+		echo "failure $2" >> "$file_mover_log"
+	fi
 }
 
 main

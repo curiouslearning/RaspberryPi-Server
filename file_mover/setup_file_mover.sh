@@ -22,9 +22,9 @@ success=$(($success|$?))
 
 
 # create mounting point for usb 
-sudo mkdir "$usb_mnt_dir" 
+sudo mkdir "$usb_mnt_point" 
 success=$(($success|$?))
-sudo chmod 777 "$usb_mnt_dir" 
+sudo chmod 777 "$usb_mnt_point" 
 success=$(($success|$?))
 
 
@@ -45,7 +45,7 @@ success=$(($success|$?))
 # map the usb symlink to the directory /mnt/usb
 sudo chmod 777 /etc/fstab
 success=$(($success|$?))
-sudo echo "/dev/usbkey	$usb_mnt_dir	vfat	rw,noauto,user,exec	0	0" >> /etc/fstab
+sudo echo "/dev/usbkey	$usb_mnt_point	vfat	rw,noauto,user,exec	0	0" >> /etc/fstab
 success=$(($success|$?))
 
 echo "$success"

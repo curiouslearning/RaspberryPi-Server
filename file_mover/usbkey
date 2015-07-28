@@ -14,7 +14,7 @@ function main() {
 		move_archives_to_usb
 	else
 	# usb is being removed
-		sudo umount "$usb_mnt_dir" 
+		sudo umount "$usb_mnt_point" 
 	fi
 	exit $?
 }
@@ -23,8 +23,7 @@ function main() {
 # args: none
 # rets: 0 if successful
 function move_archives_to_usb() {
-	sudo mount "$usb_mnt_dir" 
-	echo "mounted usb" > /usr/lib/udev/test
+	sudo mount "$usb_mnt_point" 
 
 	if [[ "$?" -eq 0 ]]; then
 		# check that this is a file_mover usb
@@ -33,12 +32,11 @@ function move_archives_to_usb() {
 			/home/pi/RaspberryPi-Server/file_mover/file_mover.sh 
 		else
 			# usb is not meant to store files
-			echo "usb did not have correct id" >> /usr/lib/udev/test
-			sudo umount "$usb_mnt_dir"	
+			sudo umount "$usb_mnt_point"	
 		fi
 		return 0
 	else
-		echo "problem mounting usb" >> /usr/lib/udev/test
+		echo "problem mounting usb" >> "$file_mover_log" 
 		return 1
 	fi
 }
