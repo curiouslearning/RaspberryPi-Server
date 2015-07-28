@@ -25,6 +25,15 @@ file_mover:
     backs up transfered files, and deletes the backed up archives
 
 
+build.sh:
+	- To be run inially to install the server on the pi and create all 
+	necessary directories...etc 
+
+
+config.sh:
+	- single point of truth for directories used in multiple scripts
+
+
 Note: 
     - setup files in each directory are to be run at build time for the
     purpose of creating the directories/scheduling cron jobs neccessary

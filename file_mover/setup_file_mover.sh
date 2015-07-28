@@ -12,28 +12,41 @@
 
 source /home/pi/RaspberryPi-Server/config.sh
 
+success=0
+
 
 sudo mkdir "$backup_dir"
+success=$(($success|$?))
 sudo chmod 777 "$backup_dir"
+success=$(($success|$?))
 
 
 # create mounting point for usb 
 sudo mkdir "$usb_mnt_dir" 
+success=$(($success|$?))
 sudo chmod 777 "$usb_mnt_dir" 
+success=$(($success|$?))
 
 
 # new rules for usb node 
 sudo mv 10-usbstick.rules /etc/udev/rules.d/
+success=$(($success|$?))
 
 
 # store/setup script to be run on insertion of usb 
 sudo mkdir /usr/lib/udev/
+success=$(($success|$?))
 sudo mv usbkey /usr/lib/udev/
+success=$(($success|$?))
 sudo chmod 777 /usr/lib/udev/usbkey
+success=$(($success|$?))
 
 
 # map the usb symlink to the directory /mnt/usb
 sudo chmod 777 /etc/fstab
+success=$(($success|$?))
 sudo echo "/dev/usbkey	$usb_mnt_dir	vfat	rw,noauto,user,exec	0	0" >> /etc/fstab
+success=$(($success|$?))
 
-exit
+echo "$success"
+exit "$success"

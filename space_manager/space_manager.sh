@@ -24,7 +24,7 @@ function main() {
 		# see if we still need more space
 		space_needed=$(python3 ~/RaspberryPi-Server/space_manager/available_space.py)
 	done
-	exit
+	exit "$success_making_space"
 }
 
 

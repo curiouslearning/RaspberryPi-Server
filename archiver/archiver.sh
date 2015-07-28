@@ -46,4 +46,4 @@ function archive_dir() {
 
 archive_dir $data_dir $extension $archive_dir
 
-exit
+exit "$?"
