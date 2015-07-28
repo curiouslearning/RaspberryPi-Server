@@ -25,7 +25,7 @@ function move_archives_to_usb() {
 
 	if [[ "$?" -eq 0 ]]; then
 		# check that this is a file_mover usb
-		if [[ $( cat /mnt/usb/id ) = "file_mover_usb" ]]; then
+		if [[ $( cat /mnt/usb/usb_id ) = "file_mover_usb" ]]; then
 			# TODO: put this in config
 			/home/pi/RaspberryPi-Server/file_mover/file_mover.sh 
 		else
