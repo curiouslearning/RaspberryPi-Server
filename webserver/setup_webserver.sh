@@ -36,4 +36,5 @@ success=$(($success|$?))
 sudo chmod 777 "$data_dir"
 success=$(($success|$?))
 
+echo "$success"
 exit "$success"

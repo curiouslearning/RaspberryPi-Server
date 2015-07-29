@@ -18,4 +18,5 @@ sudo chmod 777 "$archive_dir"
 success=$(($success|$?))
 # might want to send something to a log
 
+echo "$success"
 exit "$success"
