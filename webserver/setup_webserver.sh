@@ -22,7 +22,7 @@ success=$(($success|$?))
 # swap index.html for our index.php (might want that path in config) 
 sudo rm /var/www/index.html
 success=$(($success|$?))
-sudo mv index.php /var/www/index.php
+sudo mv /home/pi/RaspberryPi-Server/webserver/index.php /var/www/index.php
 success=$(($success|$?))
 sudo chmod 777 /var/www/index.php
 success=$(($success|$?))
