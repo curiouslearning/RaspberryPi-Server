@@ -8,13 +8,13 @@ build_log="/home/pi/RaspberryPi-Server/build/build_log.txt"
 
 function setup_pi_server() {
 
-	# /home/pi/RaspberryPi-Server/webserver/setup_webserver.sh
+	/home/pi/RaspberryPi-Server/webserver/setup_webserver.sh
 	log_setup_success $? "webserver"
 
-	# /home/pi/RaspberryPi-Server/archiver/setup_archiver.sh
+	/home/pi/RaspberryPi-Server/archiver/setup_archiver.sh
 	log_setup_success $? "archiver"
 
-	# /home/pi/RaspberryPi-Server/file_mover/setup_file_mover.sh
+	/home/pi/RaspberryPi-Server/file_mover/setup_file_mover.sh
 	log_setup_success $? "file_mover"
 
 	# setup cronjobs

@@ -1,1 +1,5 @@
 
+success setting up webserver
+success setting up archiver
+success setting up file_mover
+success setting up crontab
