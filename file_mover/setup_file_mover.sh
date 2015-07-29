@@ -29,14 +29,14 @@ success=$(($success|$?))
 
 
 # new rules for usb node 
-sudo mv 10-usbstick.rules /etc/udev/rules.d/
+sudo mv /home/pi/RaspberryPi-Server/file_mover/10-usbstick.rules /etc/udev/rules.d/
 success=$(($success|$?))
 
 
 # store/setup script to be run on insertion of usb 
 sudo mkdir /usr/lib/udev/
 success=$(($success|$?))
-sudo mv usbkey.sh /usr/lib/udev/
+sudo mv /home/pi/RaspberryPi-Server/file_mover/usbkey.sh /usr/lib/udev/
 success=$(($success|$?))
 sudo chmod 777 /usr/lib/udev/usbkey.sh
 success=$(($success|$?))
