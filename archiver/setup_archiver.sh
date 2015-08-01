@@ -13,12 +13,12 @@ cleanup_boot="/etc/init.d/archiver_cleanup.sh"
 
 success=0
 
-sudo mkdir "$archive_dir"
-success=$(($success|$?))
+#sudo mkdir "$archive_dir"
+#success=$(($success|$?))
 # might want to send something to a log
 
-sudo chmod 777 "$archive_dir"
-success=$(($success|$?))
+#sudo chmod 777 "$archive_dir"
+#success=$(($success|$?))
 # might want to send something to a log
 
 # set archiver_cleanup.sh to be run on boot
@@ -26,7 +26,7 @@ sudo mv "$cleanup" "$cleanup_boot"
 success=$(($success|$?))
 sudo chmod 777 "$cleanup_boot"
 success=$(($success|$?))
-sudo update-rc.d "$cleanup_boot"
+sudo update-rc.d archiver_cleanup.sh defaults
 success=$(($success|$?))
 
 echo "$success"
