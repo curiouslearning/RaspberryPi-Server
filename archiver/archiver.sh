@@ -15,8 +15,6 @@ echo "$(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
 source /home/pi/RaspberryPi-Server/config.sh
 
 extension=".db"
-archiver_log="/home/pi/RaspberryPi-Server/archiver_log.txt"
-
 
 function main() {
 	# is there >= one file in the directory with the extension
@@ -54,7 +52,9 @@ function archive_dir() {
 
 		# remove archived files if tar was successful
 		if [[ "$success" -eq 0 ]]; then
+			echo "files archived not yet deleted" >> "$archiver_log"
 			sudo rm $1*$2
+			log_success 1 "removing archived_files"
 		fi
 	fi
 	return "$success"
@@ -72,6 +72,5 @@ function log_success() {
 		echo "failure $2" >> "$archiver_log"
 	fi
 }
-
 
 main
