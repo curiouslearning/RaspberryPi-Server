@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 #### BEGIN INIT INFO
 # Provides:          archiver_cleanup.sh 
 # Required-Start:    $remote_fs $syslog
@@ -13,7 +13,7 @@
 # Date: July 31, 2015
 
 
-echo "$(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
+echo "on boot $(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
 
 source /home/pi/RaspberryPi-Server/config.sh
 
