@@ -1,8 +1,17 @@
-#!/bin/bash
-# archiver_cleanup.sh
-# by Jason Krone for Curious Learning
-# checks that the archiver deleted the files it last archived 
-#
+!/bin/bash
+#### BEGIN INIT INFO
+# Provides:          archiver_cleanup.sh 
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: cleans up archived .db files
+# Description: checks that archiver deleted the files it last archived 
+### END INIT INFO
+
+# By Jason Krone for Curious Learning
+# Date: July 31, 2015
+
 
 echo "$(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
 
