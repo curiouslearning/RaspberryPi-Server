@@ -80,6 +80,7 @@ function delete_oldest_file() {
 	sudo rm "$1$file"
 
 	success=$?
+	echo "($date)" >> "$space_manager_log"
 	if [[ success -eq 0 ]]; then
 		echo "deleted file: $1$file to make space" >> "$space_manager_log"
 	else

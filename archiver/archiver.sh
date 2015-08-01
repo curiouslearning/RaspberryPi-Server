@@ -9,12 +9,27 @@
 #
 
 
-
 echo "$(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
 
 # get variables from config
 source /home/pi/RaspberryPi-Server/config.sh
+
 extension=".db"
+archiver_log="/home/pi/RaspberryPi-Server/archiver_log.txt"
+
+
+function main() {
+	# is there >= one file in the directory with the extension
+	if [[ $(cd "$data_dir" && ls -l *$extension | wc -l) -gt 0 ]]; then
+		archive_dir $data_dir $extension $archive_dir
+		echo "$?"
+		exit "$?"
+	# there are no files to archive
+	else
+		exit 0
+	fi
+}
+
 
 # purp: creates a compressed archive of all files with the given extension
 # in the directory specified and then stores the created archive in the 
@@ -23,27 +38,40 @@ extension=".db"
 # path to archive folder
 # rets: 0 if successful; otherwise returns non-zero value 
 function archive_dir() {
-    # if there is at least one file in the directory with the extension
-    if [[ $(cd "$1" && ls -l *$2 | wc -l) -gt 0 ]]; then
-        # use seconds since epoch as archive name
-        local arc_name=$(date +%s)
-        # create archive
-        (cd "$1" && sudo tar -czf $3$arc_name.tar.gz *$2)
-        # remove archived files if tar was successful
-        if [[ "$?" -eq 0 ]]; then
-            sudo rm $1*$2
-			echo "was able to archive files"
-            return 0 
-        else
-			echo "was not able to archive files"
-            # Error tar was unsuccessful could not create archive
-            return 1
-        fi
-    else
-        return 0
-    fi 
+	echo "$(date)" >> "$archiver_log"
+	local success=0
+
+	# use seconds since epoch as archive name
+	local arc_name=$(date +%s)
+	success=$?
+	log_success $success "getting seconds since epoch"
+
+	if [[ "$success" -eq 0 ]]; then
+		# create archive
+		(cd "$1" && sudo tar -czf $3$arc_name.tar.gz *$2)
+		success=$?
+		log_success $success "archiving files"
+
+		# remove archived files if tar was successful
+		if [[ "$success" -eq 0 ]]; then
+			sudo rm $1*$2
+		fi
+	fi
+	return "$success"
 }
 
-archive_dir $data_dir $extension $archive_dir
 
-exit "$?"
+# purp: if arg1 is 0, prints success message with subject given in arg2
+# otherwise, if arg1 is non-zero, prints failure message with given subject
+# args: arg1 - exit_value, arg2 - subject of message
+# rets: nothing
+function log_success() {
+	if [[ $1 -eq 0 ]]; then
+		echo "success $2" >> "$archiver_log" 
+	else
+		echo "failure $2" >> "$archiver_log"
+	fi
+}
+
+
+main
