@@ -9,6 +9,8 @@
 echo "$(date)" >> /home/pi/RaspberryPi-Server/space_manager/test_sm
 
 source /home/pi/RaspberryPi-Server/config.sh
+source /home/pi/RaspberryPi-Server/logger.sh
+
 space_manager_log="/home/pi/RaspberryPi-Server/space_manager/space_manager_log.txt"
 
 
@@ -81,11 +83,7 @@ function delete_oldest_file() {
 
 	success=$?
 	echo "($date)" >> "$space_manager_log"
-	if [[ success -eq 0 ]]; then
-		echo "deleted file: $1$file to make space" >> "$space_manager_log"
-	else
-		echo "problem deleting file: $1$file" >> "$space_manager_log"
-	fi
+	log_status "$success" "deleting file: $1$file to make space" "$space_manager_log"
 
 	return $success
 }

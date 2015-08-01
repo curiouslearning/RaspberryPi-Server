@@ -4,34 +4,24 @@
 # builds weserver system
 #
 
+# import logger
+source /home/pi/RaspberryPi-Server/logger.sh
 build_log="/home/pi/RaspberryPi-Server/build/build_log.txt"
 
-function setup_pi_server() {
+function main() {
 
 	/home/pi/RaspberryPi-Server/webserver/setup_webserver.sh
-	log_setup_success $? "webserver"
+	log_status $? "setting up webserver" "$build_log"
 
 	/home/pi/RaspberryPi-Server/archiver/setup_archiver.sh
-	log_setup_success $? "archiver"
+	log_status $? "setting up archiver" "$build_log"
 
 	/home/pi/RaspberryPi-Server/file_mover/setup_file_mover.sh
-	log_setup_success $? "file_mover"
+	log_status $? "setting up file_mover" "$build_log"
 
 	# setup cronjobs
 	crontab /home/pi/RaspberryPi-Server/pi_server_crontab
-	log_setup_success $? "crontab"
+	log_status $? "setting up crontab" "$build_log"
 }
 
-# purp: if arg1 is 0, prints success message with subject given in arg2
-# otherwise, if arg1 is non-zero, prints failure message with given subject
-# args: arg1 - exit_value, arg2 - subject of message
-# rets: nothing
-function log_setup_success() {
-	if [[ $1 -eq 0 ]]; then
-		echo "success setting up $2" >> "$build_log" 
-	else
-		echo "failure setting up $2" >> "$build_log"
-	fi
-}
-
-setup_pi_server
+main
