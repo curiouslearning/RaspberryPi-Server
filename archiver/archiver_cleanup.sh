@@ -20,12 +20,23 @@ source /home/pi/RaspberryPi-Server/config.sh
 success_message="success removing archived_files"
 incomplete_message="files archived not yet deleted"
 failure_message="failure removing archived_files"
+temp="/mnt/s3/archive_temp/"
+
 
 function main() {
 	# get last line of log
 	local files_removed=$( awk '/./{line=$0} END{print line}' "$archiver_log" )
 
-	# if archiving process incomplete
+	# if tar was incompelete
+	if [[ $( ls -c "$temp" | wc -l ) -gt 0 ]]; then
+		# remove incomplete tars
+		sudo rm $temp*
+		# run archiver again
+		sudo /home/pi/RaspberryPi-Server/archiver/archiver.sh
+	fi
+
+
+	# if removal process was incomplete
 	if [[ "$files_removed" = "$failure_message" ||
 	      "$files_removed" = "$incomplete_message" ]]; then
 

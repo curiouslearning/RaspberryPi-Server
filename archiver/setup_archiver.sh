@@ -10,6 +10,7 @@
 source /home/pi/RaspberryPi-Server/config.sh
 cleanup="/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh"
 cleanup_boot="/etc/init.d/archiver_cleanup.sh"
+temp="/mnt/s3/archive_temp/ # TODO create this 
 
 success=0
 

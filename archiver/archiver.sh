@@ -12,12 +12,14 @@ echo "$(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
 source /home/pi/RaspberryPi-Server/config.sh
 # import logger
 source /home/pi/RaspberryPi-Server/logger.sh
+# TODO: import temp
+temp="/mnt/s3/archive_temp/"
 
 extension=".db"
 
 function main() {
 	# is there >= one file in the directory with the extension
-	if [[ $(cd "$data_dir" && ls -l *$extension | wc -l) -gt 0 ]]; then
+	if [[ $(cd "$data_dir" && ls -c *$extension | wc -l) -gt 0 ]]; then
 		archive_dir $data_dir $extension $archive_dir
 		echo "$?"
 		exit "$?"
@@ -44,16 +46,21 @@ function archive_dir() {
 	log_status $success "getting seconds since epoch" "$archiver_log"
 
 	if [[ "$success" -eq 0 ]]; then
-		# create archive
-		(cd "$1" && sudo tar -czf $3$arc_name.tar.gz *$2)
+		# create archive in temp folder
+		(cd "$1" && sudo tar -czf $temp$arc_name.tar.gz *$2)
 		success=$?
 		log_status $success "archiving files" "$archiver_log"
 
-		# remove archived files if tar was successful
 		if [[ "$success" -eq 0 ]]; then
-			echo "files archived not yet deleted" >> "$archiver_log"
-			sudo rm $1*$2
-			log_status $? "removing archived_files" "$archiver_log"
+			# move archived files out of temp
+			sudo mv $temp$arc_name.tar.gz $3$arc_name.tar.gz
+			success=$?
+		
+			if [[ "$success" -eq 0 ]]; then
+				echo "files archived not yet deleted" >> "$archiver_log"
+				sudo rm $1*$2
+				log_status $? "removing archived_files" "$archiver_log"
+			fi
 		fi
 	fi
 	return "$success"
