@@ -12,10 +12,9 @@ echo "$(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
 source /home/pi/RaspberryPi-Server/config.sh
 # import logger
 source /home/pi/RaspberryPi-Server/logger.sh
-# TODO: import temp
-temp="/mnt/s3/archive_temp/"
 
 extension=".db"
+
 
 function main() {
 	# is there >= one file in the directory with the extension
@@ -47,13 +46,13 @@ function archive_dir() {
 
 	if [[ "$success" -eq 0 ]]; then
 		# create archive in temp folder
-		(cd "$1" && sudo tar -czf $temp$arc_name.tar.gz *$2)
+		(cd "$1" && sudo tar -czf $archiver_temp$arc_name.tar.gz *$2)
 		success=$?
 		log_status $success "archiving files" "$archiver_log"
 
 		if [[ "$success" -eq 0 ]]; then
 			# move archived files out of temp
-			sudo mv $temp$arc_name.tar.gz $3$arc_name.tar.gz
+			sudo mv $archiver_temp$arc_name.tar.gz $3$arc_name.tar.gz
 			success=$?
 		
 			if [[ "$success" -eq 0 ]]; then

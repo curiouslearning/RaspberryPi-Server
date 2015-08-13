@@ -10,17 +10,21 @@
 source /home/pi/RaspberryPi-Server/config.sh
 cleanup="/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh"
 cleanup_boot="/etc/init.d/archiver_cleanup.sh"
-temp="/mnt/s3/archive_temp/ # TODO create this 
 
 success=0
 
 sudo mkdir "$archive_dir"
 success=$(($success|$?))
-# might want to send something to a log
-
 sudo chmod 777 "$archive_dir"
 success=$(($success|$?))
-# might want to send something to a log
+
+
+# create temp dir for creating tars
+sudo mkdir "$archiver_temp"
+success=$(($success|$?))
+sudo chmod 777 "$archiver_temp"
+success=$(($success|$?))
+
 
 # set archiver_cleanup.sh to be run on boot
 sudo mv "$cleanup" "$cleanup_boot" 

@@ -15,9 +15,17 @@ source /home/pi/RaspberryPi-Server/config.sh
 success=0
 
 
+# dir to hold backups of tars transfered to usb
 sudo mkdir "$backup_dir"
 success=$(($success|$?))
 sudo chmod 777 "$backup_dir"
+success=$(($success|$?))
+
+
+# create temp dir
+sudo mkdir "$file_mover_temp"
+success=$(($success|$?))
+sudo chmod 777 "$file_mover_temp"
 success=$(($success|$?))
 
 
@@ -33,7 +41,7 @@ sudo mv /home/pi/RaspberryPi-Server/file_mover/10-usbstick.rules /etc/udev/rules
 success=$(($success|$?))
 
 
-# store/setup script to be run on insertion of usb 
+# set script to be run on insertion of usb 
 sudo mkdir /usr/lib/udev/
 success=$(($success|$?))
 sudo mv /home/pi/RaspberryPi-Server/file_mover/usbkey.sh /usr/lib/udev/
@@ -47,6 +55,7 @@ sudo chmod 777 /etc/fstab
 success=$(($success|$?))
 sudo echo "/dev/usbkey	$usb_mnt_point	vfat	rw,noauto,user,exec	0	0" >> /etc/fstab
 success=$(($success|$?))
+
 
 echo "$success"
 exit "$success"

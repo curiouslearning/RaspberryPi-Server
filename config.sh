@@ -11,6 +11,7 @@ data_dir="/mnt/s3/globallit-tabletdata/"
 # archiver.sh 
 archive_dir="/mnt/s3/tabletdata_archive/"
 archiver_log="/home/pi/RaspberryPi-Server/archiver/archiver_log.txt"
+archiver_temp="/mnt/s3/archiver_temp/"
 
 
 # file_mover.sh
