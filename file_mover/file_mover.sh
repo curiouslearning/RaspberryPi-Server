@@ -1,3 +1,5 @@
+
+
 # !/bin/bash
 # file_mover.sh
 # By Jason Krone for Curious Learning
@@ -23,28 +25,44 @@ function main() {
 }
 
 
+# purp: moves archives to usb mount directory and then puts transfered archives
+# into the backup directory
+# args: none
 function move_files() {
 	local success=0
+	# array of files to be moved
+	archived_files=( "$archive_dir"* )
+	success=$?
 
-	# cp files for usb to temp 
-	sudo cp $archive_dir* "$file_mover_temp"
-	
-	if [[ $? -eq 0 ]]; then
-		# copy files from file_mover_temp to the usb
-		sudo mv $file_mover_temp* "$usb_mnt_point" 
+	if [[ $success -eq 0 ]]; then 
+		sudo cp $archive_dir* "$file_mover_temp"
 		success=$?
-		log_status $success "copying files to usb" "$file_mover_log"
+	fi 	
 
-		if [[ $success -eq 0 ]]; then
-			# move files to backups
-			echo "copied files not yet moved to backupdir" >> "$file_mover_log"
-			sudo mv $archive_dir* "$backup_dir" # it could fail to do this but will catch it next time
-			success=$?
-			log_status $success "moving files to backup dir" "$file_mover_log"
-		fi
+	if [[ $success -eq 0 ]]; then 
+		# copy files from temp to usb
+		sudo cp $file_mover_temp* $usb_mnt_point	
+		success=$?
+	fi
+	
+	if [[ $success -eq 0 ]]; then 
+		# move files from temp to backups
+		sudo mv "$file_mover_temp"* "$backup_dir"
+		success=$?
 	fi
 
-	return $success
+	# if it crashes during this process there will be files in both
+	# the backup dir and the archive that are the same -> duplicates
+	# so cleanup should check for this case and delete any duplicates
+	if [[ $success -eq 1 ]]; then 
+		# remove backedup files from archive
+		for file in "${archived_files[@]}"; do
+			sudo rm "$file"
+		done
+	fi
+
+	return $?
 }
+
 
 main
