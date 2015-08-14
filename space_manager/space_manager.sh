@@ -11,8 +11,6 @@ echo "$(date)" >> /home/pi/RaspberryPi-Server/space_manager/test_sm
 source /home/pi/RaspberryPi-Server/config.sh
 source /home/pi/RaspberryPi-Server/logger.sh
 
-space_manager_log="/home/pi/RaspberryPi-Server/space_manager/space_manager_log.txt"
-
 
 function main() {
     # see if there is sufficent space i.e. at least 1GB free
@@ -58,10 +56,9 @@ function make_space() {
 	return "$exit_status"
 }
 
-
+# TODO: put this in a utility file to import
 # purp: ouputs the number of files in the given directory
 # args: path to the directory
-# rets: nothing 
 function num_files_in_dir() {
 	local num_files=$( ls -c "$1" | wc -l )
 	echo "$num_files"
