@@ -13,11 +13,10 @@
 # Date: July 31, 2015
 
 source /home/pi/RaspberryPi-Server/config.sh
-fm_log="/home/pi/RaspberryPi-Server/file_mover/file_mover_log.txt"
 
 
 function main() {
-	echo "from cleanuppp: $( date )" >> "$fm_log"
+	echo "from cleanuppp: $( date )" >> "$file_mover_log"
 	
 	# see if removal of backedup files was incomplete
 	if [[ $( num_files_in_dir "$backup_dir" ) -gt 0 &&
@@ -29,7 +28,7 @@ function main() {
 		echo "duplicates: ${duplicates[@]}"
 		# remove any duplicates
 		for file in ${duplicates[@]}; do
-			echo "removing duplicate : $file"
+			echo "removing duplicate : $file" >> "$file_mover_log"
 			sudo rm "$file"
 		done
 	fi
@@ -37,7 +36,7 @@ function main() {
 	# error with file transfer process and usb is inserted
 	if [[ $( mount | grep /mnt/usb ) != "" && 
 	      $( num_files_in_dir "$file_mover_temp" ) -gt 0 ]]; then
-		echo "files in temp and usb mounted" >> "$fm_log"
+		echo "files in temp and usb mounted" >> "$file_mover_log"
 		# re-run process
 		/home/pi/RaspberryPi-Server/file_mover/file_mover.sh
 	fi
