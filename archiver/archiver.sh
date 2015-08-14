@@ -5,14 +5,9 @@
 # archives tablet data
 #
 
-
-echo "$(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
-
 # get variables from config
+source /home/pi/RasbperryPi-Server/logger.sh
 source /home/pi/RaspberryPi-Server/config.sh
-# import logger
-source /home/pi/RaspberryPi-Server/logger.sh
-
 extension=".db"
 
 
@@ -41,24 +36,31 @@ function archive_dir() {
 	success=$?
 	log_status $success "getting seconds since epoch" "$archiver_log"
 
+	# get list of files to tar
 	if [[ "$success" -eq 0 ]]; then
-		# create archive in temp folder
-		(cd "$1" && sudo tar -czf $archiver_temp$arc_name.tar.gz *$2)
+		local archive_files=($1*$2)
+		log_status $success "getting array of files to archive"
+	fi
+
+	# create archive in temp folder
+	if [[ "$success" -eq 0 ]]; then
+		(cd $1 && sudo tar -czf $archiver_temp$arc_name.tar.gz ${archive_files##*/})
 		success=$?
 		log_status $success "archiving files" "$archiver_log"
-
-		if [[ "$success" -eq 0 ]]; then
-			# move archived files out of temp
-			sudo mv $archiver_temp$arc_name.tar.gz $3$arc_name.tar.gz
-			success=$?
-		
-			if [[ "$success" -eq 0 ]]; then
-				echo "files archived not yet deleted" >> "$archiver_log"
-				sudo rm $1*$2
-				log_status $? "removing archived_files" "$archiver_log"
-			fi
-		fi
 	fi
+
+	# move archived files out of temp
+	if [[ "$success" -eq 0 ]]; then
+		sudo mv $archiver_temp$arc_name.tar.gz $3$arc_name.tar.gz
+		success=$?
+	fi
+
+	# remove archived files
+	if [[ "$success" -eq 0 ]]; then
+		# remove listed files and write names
+		sudo rm ${archive_files[@]} # check that this works
+	fi
+
 	return "$success"
 }
 
