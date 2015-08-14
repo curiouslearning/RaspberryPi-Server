@@ -38,8 +38,6 @@ function main() {
 	# if removal process was incomplete
 	if [[ "$files_removed" = "$failure_message" ||
 	      "$files_removed" = "$incomplete_message" ]]; then
-
-		echo "finishing archiver"
 		# TODO: might want to put .db in config
 		sudo rm $data_dir*.db 
 		# process is now complete

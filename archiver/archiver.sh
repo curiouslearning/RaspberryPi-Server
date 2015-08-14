@@ -20,7 +20,6 @@ function main() {
 	# is there >= one file in the directory with the extension
 	if [[ $(cd "$data_dir" && ls -c *$extension | wc -l) -gt 0 ]]; then
 		archive_dir $data_dir $extension $archive_dir
-		echo "$?"
 		exit "$?"
 	# there are no files to archive
 	else
@@ -28,12 +27,10 @@ function main() {
 	fi
 }
 
-
-# purp: creates a compressed archive of all files with the given extension
-# in the directory specified and then stores the created archive in the 
-# given archive folder
-# args: path to directory of files to archive, extension of files to be compressed E.g. (.db), 
-# path to archive folder
+# purp: archives files with given extension in the given directory and stores
+# that archive in the given archive directory
+# args: $1 - directory of files to archive, $2 - extension of files to archive(.db), 
+#       $3 - path to archive folder
 # rets: 0 if successful; otherwise returns non-zero value 
 function archive_dir() {
 	echo "$(date)" >> "$archiver_log"
