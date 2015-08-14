@@ -1,5 +1,5 @@
 #!/bin/bash
-# setup_archiver
+# setup_archiver.sh
 # By Jason Krone for Curious Learning
 # Date: June 15, 2015
 # Creates the directory to be used by archiving script
@@ -8,8 +8,8 @@
 #
 
 source /home/pi/RaspberryPi-Server/config.sh
-cleanup="/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh"
-cleanup_boot="/etc/init.d/archiver_cleanup.sh"
+arc_cleanup="/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh"
+arc_cleanup_boot="/etc/init.d/archiver_cleanup.sh"
 
 success=0
 
@@ -27,9 +27,9 @@ success=$(($success|$?))
 
 
 # set archiver_cleanup.sh to be run on boot
-sudo mv "$cleanup" "$cleanup_boot" 
+sudo mv "$arc_cleanup" "$arc_cleanup_boot" 
 success=$(($success|$?))
-sudo chmod 777 "$cleanup_boot"
+sudo chmod 777 "$arc_cleanup_boot"
 success=$(($success|$?))
 sudo update-rc.d archiver_cleanup.sh defaults
 success=$(($success|$?))

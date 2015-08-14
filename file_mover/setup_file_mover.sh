@@ -11,6 +11,8 @@
 #
 
 source /home/pi/RaspberryPi-Server/config.sh
+fm_cleanup="/home/pi/RaspberryPi-Server/file_mover/file_mover_cleanup.sh"
+fm_cleanup_boot="/etc/init.d/file_mover_cleanup.sh"
 
 success=0
 
@@ -54,6 +56,15 @@ success=$(($success|$?))
 sudo chmod 777 /etc/fstab
 success=$(($success|$?))
 sudo echo "/dev/usbkey	$usb_mnt_point	vfat	rw,noauto,user,exec	0	0" >> /etc/fstab
+success=$(($success|$?))
+
+
+# set file_mover_cleanup.sh to be run on boot
+sudo mv "$fm_cleanup" "$fm_cleanup_boot" 
+success=$(($success|$?))
+sudo chmod 777 "$fm_cleanup_boot"
+success=$(($success|$?))
+sudo update-rc.d file_mover_cleanup.sh defaults
 success=$(($success|$?))
 
 

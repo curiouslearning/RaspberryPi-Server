@@ -16,6 +16,8 @@ archiver_temp="/mnt/s3/archiver_temp/"
 
 # file_mover.sh
 usb_mnt_point="/mnt/usb/"
+file_mover_temp="/mnt/s3/file_mover_temp/"
 backup_dir="/mnt/s3/tabletdata_backups/"
 file_mover_log="/home/pi/RaspberryPi-Server/file_mover/file_mover_log.txt"
+
 
