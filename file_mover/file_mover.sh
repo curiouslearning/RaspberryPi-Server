@@ -1,5 +1,3 @@
-
-
 # !/bin/bash
 # file_mover.sh
 # By Jason Krone for Curious Learning
@@ -12,7 +10,7 @@ source /home/pi/RaspberryPi-Server/config.sh
 
 
 function main() {
-	echo "$(date)" >> "$file_mover_log"
+	echo "from file_mover.sh $(date)" >> "$file_mover_log"
 	local success=0
 
 	# are there files to move ?
@@ -51,10 +49,7 @@ function move_files() {
 		success=$?
 	fi
 
-	# if it crashes during this process there will be files in both
-	# the backup dir and the archive that are the same -> duplicates
-	# so cleanup should check for this case and delete any duplicates
-	if [[ $success -eq 1 ]]; then 
+	if [[ $success -eq 0 ]]; then 
 		# remove backedup files from archive
 		for file in "${archived_files[@]}"; do
 			sudo rm "$file"
