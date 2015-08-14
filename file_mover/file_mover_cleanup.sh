@@ -6,30 +6,40 @@
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: cleans up archived unmoved archive files
-# Description: checks that the file mover moved the files it copied to usb stick
+# Description: finishes any processes that haven't been completed by file_mover
 ### END INIT INFO
 
 # By Jason Krone for Curious Learning
 # Date: July 31, 2015
 
 source /home/pi/RaspberryPi-Server/config.sh
+fm_log="/home/pi/RaspberryPi-Server/file_mover/file_mover_log.txt"
 
 
 function main() {
-	echo "from cleanuppp: $( date )" >> /home/pi/RaspberryPi-Server/file_mover/file_mover_log.txt
+	echo "from cleanuppp: $( date )" >> "$fm_log"
 	
 	# see if removal of backedup files was incomplete
 	if [[ $( num_files_in_dir "$backup_dir" ) -gt 0 &&
 	      $( num_files_in_dir "$archive_dir" ) -gt 0 ]]; then
-		echo "there are files in both dirs
+		echo "there are files in both dirs"
 		backup_files=( "$backup_dir"* )
 		archive_files=( "$archive_dir"* )
 		duplicates=$( intersection archive_files[@] backup_files[@] file_eq )
 		echo "duplicates: ${duplicates[@]}"
 		# remove any duplicates
 		for file in ${duplicates[@]}; do
+			echo "removing duplicate : $file"
 			sudo rm "$file"
 		done
+	fi
+
+	# error with file transfer process and usb is inserted
+	if [[ $( mount | grep /mnt/usb ) != "" && 
+	      $( num_files_in_dir "$file_mover_temp" ) -gt 0 ]]; then
+		echo "files in temp and usb mounted" >> "$fm_log"
+		# re-run process
+		/home/pi/RaspberryPi-Server/file_mover/file_mover.sh
 	fi
 }
 
@@ -76,6 +86,5 @@ function intersection() {
 	done	
 	echo ${intersect[@]}
 }
-
 
 main
