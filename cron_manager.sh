@@ -5,13 +5,17 @@
 # Runs cronjobs for pi
 # 
 
+source /home/pi/RaspberryPi-Server/logger.sh
+
 space_manager="/home/pi/RaspberryPi-Server/space_manager/space_manager.sh"
 archiver="/home/pi/RaspberryPi-Server/archiver/archiver.sh"
 
+
 function main() {
 	run "$space_manager" 5
-	# probably want to log status
+	log_status $? "running space_manager from cron manager" "$space_manager_log"
 	run "$archiver" 5	
+	log_status $? "running archiver from cron manager" "$archiver_log"
 }
 
 function run() {

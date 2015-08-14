@@ -21,3 +21,6 @@ backup_dir="/mnt/s3/tabletdata_backups/"
 file_mover_log="/home/pi/RaspberryPi-Server/file_mover/file_mover_log.txt"
 
 
+# space manager
+space_manager_log="/home/pi/RaspberryPi-Server/space_manager/space_manager_log.txt"
+
