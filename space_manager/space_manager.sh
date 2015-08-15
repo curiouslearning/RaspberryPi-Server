@@ -6,14 +6,16 @@
 # and if there is not, delete files to make room
 #
 
-echo "$(date)" >> /home/pi/RaspberryPi-Server/space_manager/test_sm
 
 source /home/pi/RaspberryPi-Server/config.sh
 source /home/pi/RaspberryPi-Server/logger.sh
+source /home/pi/RaspberryPi-Server/counter.sh
 
 
 function main() {
-    # see if there is sufficent space i.e. at least 1GB free
+	echo "running space manager on $(date)" >> "$space_manager_log" 
+
+ 	# see if there is sufficent space i.e. at least 1GB free
 	local space_needed=$(python3 ~/RaspberryPi-Server/space_manager/available_space.py)
 	local success_making_space=0 # 0 indicates success
 
@@ -22,6 +24,7 @@ function main() {
 		make_space
 		# capture exit status of make_space
 		success_making_space=$?
+		log_status $success_making_space "making space" "$space_manager_log" 
 		# see if we still need more space
 		space_needed=$(python3 ~/RaspberryPi-Server/space_manager/available_space.py)
 	done
@@ -56,14 +59,6 @@ function make_space() {
 	return "$exit_status"
 }
 
-# TODO: put this in a utility file to import
-# purp: ouputs the number of files in the given directory
-# args: path to the directory
-function num_files_in_dir() {
-	local num_files=$( ls -c "$1" | wc -l )
-	echo "$num_files"
-}
-
 
 # purp: deletes the file/archive with the oldest last modified and
 # logs info on the file deleted in space_manager_log
@@ -75,7 +70,6 @@ function delete_oldest_file() {
 
 	# get the oldest file
 	local file=$( ls -tr "$1" | head -n 1 )
-	echo "deleting file $1$file"
 	sudo rm "$1$file"
 
 	success=$?
