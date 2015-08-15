@@ -16,15 +16,30 @@
 echo "on boot $(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
 
 source /home/pi/RaspberryPi-Server/config.sh
-
-success_message="success removing archived_files"
-incomplete_message="files archived not yet deleted"
-failure_message="failure removing archived_files"
+source /home/pi/RaspberryPi-Server/counter.sh
+source /home/pi/RaspberryPi-Server/array_intersect_utils.sh
 
 
 function main() {
-	# get last line of log
-	local files_removed=$( awk '/./{line=$0} END{print line}' "$archiver_log" )
+	# failure to remove files
+	if [[ $( num_files_in_dir "$archive_dir" ) -gt 0 && 
+	      $( num_files_in_dir "$data_dir" ) -gt 0 ]]; then
+		# get most recent archive 
+		local newest_tar=$( ls -t "$archive_dir" | head -1 )	
+
+		# get array of files in most recent tar
+		local tar_files=$( tar -tf "$archive_dir"$newest_tar )
+
+		# get array of files in data dir
+		local data_files=( "$data_dir"* )
+
+		# get intersection 
+		local duplicates=$( intersection data_files[@] tar_files[@] file_eq )
+		echo "duplicates: ${duplicates[@]}"
+
+		# delete intersection 
+		sudo rm ${duplicates[@]} 
+	fi
 
 	# if tar was incompelete
 	if [[ $( ls -c "$archiver_temp" | wc -l ) -gt 0 ]]; then
@@ -33,17 +48,9 @@ function main() {
 		# run archiver again
 		sudo /home/pi/RaspberryPi-Server/archiver/archiver.sh
 	fi
-
-
-	# if removal process was incomplete
-	if [[ "$files_removed" = "$failure_message" ||
-	      "$files_removed" = "$incomplete_message" ]]; then
-		# TODO: might want to put .db in config
-		sudo rm $data_dir*.db 
-		# process is now complete
-		echo "$success_message" >> "$archiver_log"
-	fi
+	
 	exit
 }
+
 
 main

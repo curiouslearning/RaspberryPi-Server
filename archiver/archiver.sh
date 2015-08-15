@@ -36,9 +36,8 @@ function archive_dir() {
 	success=$?
 	log_status $success "getting list of files to archive" "$archiver_log"
 
-	
+	# use seconds since epoch as archive name
 	if [[ "$success" -eq 0 ]]; then
-		# use seconds since epoch as archive name
 		local arc_name=$(date +%s)
 		success=$?
 		log_status $success "getting seconds since epoch" "$archiver_log"
@@ -46,7 +45,7 @@ function archive_dir() {
 
 	# create archive in temp folder
 	if [[ "$success" -eq 0 ]]; then
-		(cd $1 && sudo tar -czf $archiver_temp$arc_name.tar.gz ${archive_files##*/})
+		(cd $1 && sudo tar -czf $archiver_temp$arc_name.tar.gz ${archive_files[@]##*/})
 		success=$?
 		log_status $success "archiving files" "$archiver_log"
 	fi
