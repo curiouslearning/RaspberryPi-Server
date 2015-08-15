@@ -13,7 +13,6 @@
 # Date: July 31, 2015
 
 
-echo "on boot $(date)" >> /home/pi/RaspberryPi-Server/archiver/test_a
 
 source /home/pi/RaspberryPi-Server/config.sh
 source /home/pi/RaspberryPi-Server/counter.sh
@@ -21,6 +20,8 @@ source /home/pi/RaspberryPi-Server/array_intersect_utils.sh
 
 
 function main() {
+	echo "running archiver_cleanup on $(date)" >> "$archiver_log"
+
 	# failure to remove files
 	if [[ $( num_files_in_dir "$archive_dir" ) -gt 0 && 
 	      $( num_files_in_dir "$data_dir" ) -gt 0 ]]; then
@@ -42,7 +43,7 @@ function main() {
 	fi
 
 	# if tar was incompelete
-	if [[ $( ls -c "$archiver_temp" | wc -l ) -gt 0 ]]; then
+	if [[ $( num_files_in_dir "$archiver_temp" ) -gt 0 ]]; then
 		# remove incomplete tars
 		sudo rm $archiver_temp*
 		# run archiver again

@@ -12,6 +12,8 @@ extension=".db"
 
 
 function main() {
+	echo "running archiver $(date)" >> "$archiver_log"
+
 	# is there >= one file in the directory with the extension
 	if [[ $(cd "$data_dir" && ls -c *$extension | wc -l) -gt 0 ]]; then
 		archive_dir $data_dir $extension $archive_dir
@@ -28,7 +30,6 @@ function main() {
 #       $3 - path to archive folder
 # rets: 0 if successful; otherwise returns non-zero value 
 function archive_dir() {
-	echo "$(date)" >> "$archiver_log"
 	local success=0
 
 	# get list of files to tar
