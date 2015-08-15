@@ -6,8 +6,8 @@
 #
 
 # get variables from config
-source /home/pi/RasbperryPi-Server/logger.sh
 source /home/pi/RaspberryPi-Server/config.sh
+source /home/pi/RaspberryPi-Server/logger.sh
 extension=".db"
 
 
@@ -31,15 +31,17 @@ function archive_dir() {
 	echo "$(date)" >> "$archiver_log"
 	local success=0
 
-	# use seconds since epoch as archive name
-	local arc_name=$(date +%s)
-	success=$?
-	log_status $success "getting seconds since epoch" "$archiver_log"
-
 	# get list of files to tar
+	local archive_files=($1*$2)
+	success=$?
+	log_status $success "getting list of files to archive" "$archiver_log"
+
+	
 	if [[ "$success" -eq 0 ]]; then
-		local archive_files=($1*$2)
-		log_status $success "getting array of files to archive"
+		# use seconds since epoch as archive name
+		local arc_name=$(date +%s)
+		success=$?
+		log_status $success "getting seconds since epoch" "$archiver_log"
 	fi
 
 	# create archive in temp folder
@@ -53,12 +55,15 @@ function archive_dir() {
 	if [[ "$success" -eq 0 ]]; then
 		sudo mv $archiver_temp$arc_name.tar.gz $3$arc_name.tar.gz
 		success=$?
+		log_status $success "moving archive from temp" "$archiver_log"
 	fi
 
 	# remove archived files
 	if [[ "$success" -eq 0 ]]; then
 		# remove listed files and write names
 		sudo rm ${archive_files[@]} # check that this works
+		success=$?
+		log_status $success "removing archived files" "$archiver_log"
 	fi
 
 	return "$success"
