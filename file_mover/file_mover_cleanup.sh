@@ -27,7 +27,7 @@ function main() {
 		local archive_files=( "$archive_dir"* )
 
 		# get duplicates
-		local duplicates=$( intersection archive_files[@] backup_files[@] file_eq )
+		local duplicates=($( intersection archive_files[@] backup_files[@] file_eq ))
 		echo "duplicates: ${duplicates[@]}"
 
 		# remove any duplicates

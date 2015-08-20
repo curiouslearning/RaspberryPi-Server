@@ -1,9 +1,8 @@
 # array_intersect_utils.sh
 # By Jason Krone for Curious Learning
 # Date: August 14, 2015
-# contains methods used by cleanup scripts for intersection of arrays
+# contains utility functions for arrays
 #
-
 
 
 # purp: outputs true if the given file names excluding prefixes
@@ -38,7 +37,6 @@ function intersection() {
 			fi
 		done
 	done	
-	echo ${intersect[@]}
+	array_return=("${intersect[@]}")
+	echo "${intersect[@]}"
 }
-
-

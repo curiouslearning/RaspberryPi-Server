@@ -25,6 +25,7 @@ function main() {
 	# failure to remove files
 	if [[ $( num_files_in_dir "$archive_dir" ) -gt 0 && 
 	      $( num_files_in_dir "$data_dir" ) -gt 0 ]]; then
+		echo "up in here"
 		# get most recent archive 
 		local newest_tar=$( ls -t "$archive_dir" | head -1 )	
 
@@ -35,7 +36,7 @@ function main() {
 		local data_files=( "$data_dir"* )
 
 		# get intersection 
-		local duplicates=$( intersection data_files[@] tar_files[@] file_eq )
+		local duplicates=($( intersection data_files[@] tar_files[@] file_eq ))
 		echo "duplicates: ${duplicates[@]}"
 
 		# delete intersection 

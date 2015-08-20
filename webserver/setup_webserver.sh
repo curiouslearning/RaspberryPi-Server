@@ -24,7 +24,7 @@ sudo rm /var/www/index.html
 success=$(($success|$?))
 sudo mv /home/pi/RaspberryPi-Server/webserver/index.php /var/www/index.php
 success=$(($success|$?))
-sudo chmod 777 /var/www/index.php
+sudo chmod 755 /var/www/index.php   # check that this is necessary
 success=$(($success|$?))
 
 
