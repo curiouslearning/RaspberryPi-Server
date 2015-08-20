@@ -11,47 +11,85 @@ source /home/pi/RaspberryPi-Server/counter.sh
 source /home/pi/RaspberryPi-Server/array_intersect_utils.sh
 
 
+
+# Warning: these tests need to be run in a clean environment
+# archiver_temp , data_dir, and archive_dir must be empty
 function main() {
-	# test_archiver
-	# for (( i=1; i<"$1"; i++ )); do
-	#	echo "norm test $i success : $( test_normal_operation $i )"
-	# done
 
+	echo "testing normal archiving functionality"
 
-	# test archiver cleanup (i.e. failure modes) 
-	# for (( i=2; i<"$1"; i++ )); do
-	#	for (( j=1; j<"$i"; j++ )); do 
-	#		echo "partial tar $j of $i success: $( test_partial_tar $j $i )"
-	#	done
-	# done
-
-	
-	# failure in the deletion process, there are files in archive and data base
-	# check that they are deleted by cleanup 
+	# test_archiver normal behavior
 	for (( i=1; i<"$1"; i++ )); do
-		test_duplication "$i"
+		if [[ $( test_normal_operation $i ) == "false" ]]; then
+			echo "norm test with $i files failed"
+		fi
 	done
+
+	echo "testing cleanup of partial tar"
+	
+	for (( i=2; i<"$1"; i++ )); do
+		for (( j=1; j<"$i"; j++ )); do 
+			if [[ "$( test_partial_tar $j $i )" == "false" ]]; then
+				echo "testing partial tar $j of $i files failed"
+			fi
+		done
+	done
+
+	echo "testing cleanup of duplicates"
+	
+	for (( i=1; i<"$1"; i++ )); do
+		for (( j=1; j<="$i"; j++ )); do
+			for (( k=0; k<"$1"; k++ )); do
+				if [[ "$( test_duplication $i $j $k )" == "false" ]]; then
+					echo "testing duplication with $i files to archive, $j duplicates, and $k extra files failed"
+				fi
+			done
+		done
+	done
+
+	echo "archiver testing complete"
 }
 
 
-# TODO: Test that it only removes duplicates!
-
-# purp: archives the given number of files and leaves the given
-# number of duplicate files in the data dir, then runs cleanup script
-# returning true if cleanup was successful and false otherwise
-# args: $1 - files to archive, $2 - duplicates to leave
+# purp: creates an archive with the given number of files and leaves
+# the given number of duplicate files in the data dir as well as the
+# given number of un-archived data files , returns true if successfully
+# cleaned up and false otherwise   
+# args: $1 - files to archive, $2 - duplicates to leave, $3 - extra dbs
+#
+# warning: $2 must be <= $1
 function test_duplication() {
 	local success="true"
-	local dbs=($( create_dummy_files $1 ".db" "$data_dir" ))
+
+	local dbs=($( create_dummy_files "$(($1+$3))" ".db" "$data_dir" ))
+	local files_to_archive=("${dbs[@]:0:$1}")
+	local extra_dbs=("${dbs[@]:$1:$3}") # files not to be deleted
 
 	# create archive of files
 	(cd $data_dir && sudo tar -czf $archive_dir$(date +%s).tar.gz "${files_to_archive[@]##*/}")
 
-	# run cleanup script TODO: use relative path here
-	/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh
+	# get rid of non-duplicate archived files
+	for ((i=0; i<$(($1-$2)); i++)); do
+		rm "${files_to_archive[i]}"
+	done
 
-	# check success
-	success=$( arch_success dbs[@] )
+	# run cleanup adn check if it is successful
+	/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh
+	success=$( arch_success files_to_archive[@] )
+
+	if [[ "$3" -gt 0 && "$success" == "true" ]]; then
+		# check that leftover files are still in the data dir
+		local files_leftover=( "$data_dir"* )
+
+		if [[ $( set_eq extra_dbs[@] files_leftover[@] file_eq ) == "true" ]]; then 
+			success="true"
+		else
+			# problem the extra db files aren't there
+			success="false"
+		fi
+		# remove extra db files
+		sudo rm "${files_leftover[@]}"
+	fi
 
 	# remove archive we created
 	sudo rm "$archive_dir"$( ls -t "$archive_dir" | head -1 )	
@@ -217,4 +255,4 @@ function create_dummy_files() {
 }
 
 
-main 2 
+main 5 
