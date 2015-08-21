@@ -5,7 +5,6 @@
 # tests archiver
 #
 
-dummy_file="/home/pi/RaspberryPi-Server/archiver/dummy_file"
 source /home/pi/RaspberryPi-Server/config.sh
 source /home/pi/RaspberryPi-Server/counter.sh
 source /home/pi/RaspberryPi-Server/array_intersect_utils.sh
@@ -116,8 +115,12 @@ function test_partial_tar() {
 	# create tar
 	(cd $data_dir && sudo tar -czf $archiver_temp$(date +%s).tar.gz "${files_to_archive[@]##*/}")
 	
+	echo "about to run archiver cleanup"
+
 	# run cleanup script TODO: use relative path here
 	/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh
+
+	echo "finished running archiver cleanup"
 
 	# check that it worked
 	success=$( arch_success dbs[@] )
@@ -194,64 +197,6 @@ function arch_success() {
 	fi
 
 	echo "$success"	
-}
-
-
-# purp: outputs true if the two given arrays are equal and false otherwise
-# args: $1 - array1, $2 - array2, $3 - equality function
-function set_eq() {
-	equal="true"
-	local arr1=("${!1}")
-	local arr2=("${!2}")
-
-	# check that they are the same length
-	if [[ "${#arr1[@]}" -ne "${#arr2[@]}" ]]; then
-		echo "they have different lengths"
-		equal="false"
-	fi
-
-	# check that every element in arr1 is in arr2
-	for elem1 in "${arr1[@]}"; do
-		if [[ $( is_in_list "$elem1" "arr2[@]" "$3" ) == "false" ]]; then
-			equal="false"	
-		fi
-	done
-		
-	echo "$equal"
-}
-
-
-# purp: outputs ture if the given element is in the given list using 
-# the given equality function and false otherwise
-# args: $1 - element, $2 - list, $3 - equality function
-function is_in_list() {
-	in_list="false"
-	local array=("${!2}")
-
-	for item in "${array[@]}"; do
-		if [[ $( "$3" "$item" "$1" ) == "true" ]]; then
-			in_list="true"	
-			break
-		fi
-	done 
-
-	echo "$in_list"
-}
-
-
-# purp: creates the given number of dummy files
-# with the given extension in the given folder
-# args: $1 - the number of dummy files to create, $2 - file extension
-# 	$3 - dummy folder
-# rets: outputs an array of paths of the files created
-function create_dummy_files() {
-	local files_created=()
-	for (( i=0; i<"$1"; i++ )); do
-		cp "$dummy_file" $3$i$2
-		files_created+=($3$i$2)
-		echo "$i" >> $3$i$2
-	done
-	echo "${files_created[@]}"
 }
 
 
