@@ -19,7 +19,15 @@ source /home/pi/RaspberryPi-Server/array_intersect_utils.sh
 
 function main() {
 	echo "running file_mover_cleanup on $( date )" >> "$file_mover_log"
-	
+
+	# error with file transfer process and usb is inserted
+	if [[ $( mount | grep /mnt/usb ) != "" && 
+	      $( num_files_in_dir "$file_mover_temp" ) -gt 0 ]]; then
+		echo "files in temp and usb mounted" >> "$file_mover_log"
+		# re-run process
+		/home/pi/RaspberryPi-Server/file_mover/file_mover.sh
+	fi
+
 	# see if removal of backedup files was incomplete
 	if [[ $( num_files_in_dir "$backup_dir" ) -gt 0 &&
 	      $( num_files_in_dir "$archive_dir" ) -gt 0 ]]; then
@@ -34,13 +42,6 @@ function main() {
 		sudo rm ${duplicates[@]}
 	fi
 
-	# error with file transfer process and usb is inserted
-	if [[ $( mount | grep /mnt/usb ) != "" && 
-	      $( num_files_in_dir "$file_mover_temp" ) -gt 0 ]]; then
-		echo "files in temp and usb mounted" >> "$file_mover_log"
-		# re-run process
-		/home/pi/RaspberryPi-Server/file_mover/file_mover.sh
-	fi
 
 	exit
 }
