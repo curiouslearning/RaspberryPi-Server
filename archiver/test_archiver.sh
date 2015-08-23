@@ -47,6 +47,8 @@ function main() {
 	done
 
 	echo "archiver testing complete"
+
+	exit
 }
 
 
@@ -67,12 +69,12 @@ function test_duplication() {
 	# create archive of files
 	(cd $data_dir && sudo tar -czf $archive_dir$(date +%s).tar.gz "${files_to_archive[@]##*/}")
 
-	# get rid of non-duplicate archived files
+	# simulate partial removal process 
 	for ((i=0; i<$(($1-$2)); i++)); do
 		rm "${files_to_archive[i]}"
 	done
 
-	# run cleanup adn check if it is successful
+	# run cleanup adn check if it is successful. TODO: relative
 	/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh
 	success=$( arch_success files_to_archive[@] )
 

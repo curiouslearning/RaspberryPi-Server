@@ -29,7 +29,7 @@ function main() {
 	#done
 
 
-	echo "testing partial copy usb"
+	#echo "testing partial copy usb"
 	# test partial copy from temp to usb
 	# for (( i=1; i<"$1"; i++ )); do
 	#	for (( j=1; j<"$i"; j++ )); do 
@@ -38,48 +38,75 @@ function main() {
 	# done
 
 	# test failure to backup moved files from temp
-	echo "testing partial backup"
+	# echo "testing partial backup"
+	#for (( i=1; i<"$1"; i++ )); do
+	#	for (( j=1; j<"$i"; j++ )); do 
+	#		echo "called with $i -files and $j backups"
+	#		echo "partial backup: $( test_partial_backup $i $j )"
+	#	done
+	#done
+
+
+	echo "testing duplicates"
+	# failure to remove backedup files from archive
 	for (( i=1; i<"$1"; i++ )); do
-		for (( j=1; j<"$i"; j++ )); do 
-			echo "called with $i -files and $j backups"
-			echo "partial backup: $( test_partial_backup $i $j )"
+		for (( j=1; j<="$i"; j++ )); do
+			for (( k=0; k<"$1"; k++ )); do
+				echo "duplicates $i $j $k: $( test_duplicates $i $j $k )"
+			done
 		done
 	done
 
-
-	# failure to remove backedup files from archive
-
+	exit
 }
 
 
-
+# purp: creates the given number of duplicate backedup archives out of the
+# given number of archive files, leaving the given number of non-duplicate archives
+# args: $1 - archives to move, $2 - duplicates to create, $3 - non-duplicates
 function test_duplicates() {
-	local archives=($( create_dummy_files "$1" ".tar.gz" "$archive_dir" ))
-	sudo cp "${archives[@]}" $file_mover_temp
-	sudo cp "${archives[@]}" $usb_mnt_point
-	sudo mv "${archives[@]}" $backup_dir
+	local success=""
+	
+	# create archives + non-duplicates
+	local archives=($( create_dummy_files "(($1+$3))" ".tar.gz" "$archive_dir" ))
+	local arcs_to_move=("${archives[@]:0:$1}")
+	local non_dup_arcs=("${archives[@]:$1:$3}")
 
+	# put duplicates on usb and in backup
+	sudo cp "${arcs_to_move[@]}" $usb_mnt_point
+	sudo cp "${arcs_to_move[@]}" $backup_dir
 
-	# here is where we see how many duplicates we have
-	sudo rm "${archive[@]:0:$2}"
-
-	# probably want some extra newly archived files that are supposed to be
-	# removed coming in as well
-
-
-
-	# run cleanup TODO: math path rfelative
+	# simulate partial removal process
+	for ((i=0; i<$(($1-$2)); i++)); do
+		rm "${arcs_to_move[i]}"
+	done
+	
+	# run cleanup . TODO: relative path
 	/home/pi/RaspberryPi-Server/file_mover/file_mover_cleanup.sh
-
-	# check if it was successful
-	success=$( file_mover_success archives[@] )
-
-	echo "names: ${names[@]}"
+	
+	success=$( file_mover_success arcs_to_move[@] )
+	
+	# check that non-duplicates are still there
+	# TODO: can use the directory contains method for this
+	if [[ "$3" -gt 0 && "$success" == "true" ]]; then
+		local arcs_leftover=( "$archive_dir"* )	
+		
+		if [[ $( set_eq non_dup_arcs[@] arcs_leftover[@] file_eq ) == "true" ]]; then
+			success="true"
+		else
+			echo "files are not still there"
+			success="false"
+		fi
+		# remove leftover files
+		sudo rm "${arcs_leftover[@]}"
+	fi
+	
+	# remove test files from backups and archive
+	# TODO: might want to change method more flexible 
+	local names=("${arcs_to_move[@]##*/}")
 	remove_test_files names[@]
 
 	echo "$success"
-
-
 }
 
 
@@ -230,4 +257,4 @@ function file_mover_success() {
 
 
 
-main 3
+main 5

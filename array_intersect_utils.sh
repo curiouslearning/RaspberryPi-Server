@@ -87,7 +87,7 @@ function set_eq() {
 # the given equality function and false otherwise
 # args: $1 - element, $2 - list, $3 - equality function
 function is_in_list() {
-	in_list="false"
+	local in_list="false"
 	local array=("${!2}")
 
 	for item in "${array[@]}"; do

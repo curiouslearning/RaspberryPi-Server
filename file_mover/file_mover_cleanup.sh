@@ -24,10 +24,13 @@ function main() {
 	if [[ $( mount | grep /mnt/usb ) != "" && 
 	      $( num_files_in_dir "$file_mover_temp" ) -gt 0 ]]; then
 		echo "files in temp and usb mounted" >> "$file_mover_log"
-		# re-run process
+		# re-run process: TODO: make this relative
 		/home/pi/RaspberryPi-Server/file_mover/file_mover.sh
 	fi
 
+
+	# temp should also be empty for this to be the case
+	# checking temp may avoid previous prolem in testing
 	# see if removal of backedup files was incomplete
 	if [[ $( num_files_in_dir "$backup_dir" ) -gt 0 &&
 	      $( num_files_in_dir "$archive_dir" ) -gt 0 ]]; then
@@ -41,7 +44,6 @@ function main() {
 		# remove any duplicates
 		sudo rm ${duplicates[@]}
 	fi
-
 
 	exit
 }
