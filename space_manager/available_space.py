@@ -1,33 +1,23 @@
 # available_space.py
 # By Jason Krone for Curious Learning
 # Date: June 16, 2015
-# prints 0 stdout if there is sufficient available space on the Pi's SD card
-# otherwise, prints 1 to stdout
+# outputs the about of available space in kb on pi
 #
 
 import subprocess
 import sys
 
-
 AVAILABLE_SPACE_INDEX = 10
-# amount of available space that must be on Pi. TODO: put this in config
-SPACE_NEEDED_GB = 1
-KB_PER_GB = 1000000
-
 
 def main():
-    avail_gb = avail_space_SD()
-    if avail_gb >= SPACE_NEEDED_GB:
-        sys.stdout.write("0")
-    else:
-        sys.stdout.write("1")
-        
+	space = avail_space()	
+	print(space)
 
-# TODO: pull /dev/root (i.e. file path to sd card from config)
+
 # purp: returns the amount of available space in GB on the Pi's SD card
 # args: none
 # rets: float  
-def avail_space_SD():
+def avail_space():
     # run shell command to check space
     output = subprocess.check_output(
         "df -k /dev/root",
@@ -39,8 +29,6 @@ def avail_space_SD():
 
     # extract available space field as int
     avail_kb = int(decoded_output.split()[AVAILABLE_SPACE_INDEX])
-    # force avail_gb to be a float
-    avail_gb = avail_kb / float(KB_PER_GB)
-    return avail_gb
+    return avail_kb
 
 main()

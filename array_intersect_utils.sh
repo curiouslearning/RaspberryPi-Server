@@ -25,8 +25,6 @@ function create_dummy_files() {
 }
 
 
-
-
 # purp: outputs the contents of the given directory
 # args: $1 - path to directory
 function dir_contents() {
@@ -38,7 +36,6 @@ function dir_contents() {
 		
 	echo "${contents[@]}"
 }
-
 
 
 # purp: outputs true if the given files are contained in the given directory
@@ -135,3 +132,4 @@ function intersection() {
 	done	
 	echo "${intersect[@]}"
 }
+
