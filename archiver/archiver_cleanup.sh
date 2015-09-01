@@ -14,9 +14,9 @@
 
 
 
-source /home/pi/RaspberryPi-Server/config.sh
-source /home/pi/RaspberryPi-Server/counter.sh
-source /home/pi/RaspberryPi-Server/array_intersect_utils.sh
+source ../config.sh
+source ../counter.sh
+source ../array_intersect_utils.sh
 
 
 function main() {
@@ -48,7 +48,7 @@ function main() {
 		# remove incomplete tars
 		sudo rm $archiver_temp*
 		# run archiver again
-		sudo /home/pi/RaspberryPi-Server/archiver/archiver.sh
+		sudo ./archiver.sh
 	fi
 	
 	exit
