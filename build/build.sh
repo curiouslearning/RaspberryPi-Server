@@ -6,7 +6,7 @@
 
 # import logger
 source ../logger.sh
-build_log="build/build_log.txt"
+build_log="build_log.txt"
 
 function main() {
 
