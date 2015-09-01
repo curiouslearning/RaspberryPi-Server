@@ -5,9 +5,9 @@
 # Moves archived tablet data to USB stick, then adds moved archives to backups
 #
 
-source /home/pi/RaspberryPi-Server/logger.sh
-source /home/pi/RaspberryPi-Server/counter.sh
-source /home/pi/RaspberryPi-Server/config.sh
+source ../logger.sh
+source ../counter.sh
+source ../config.sh
 
 
 function main() {

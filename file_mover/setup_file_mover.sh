@@ -10,8 +10,8 @@
 # "Detecting USB Pen being plugged in"
 #
 
-source /home/pi/RaspberryPi-Server/config.sh
-fm_cleanup="/home/pi/RaspberryPi-Server/file_mover/file_mover_cleanup.sh"
+source ../config.sh
+fm_cleanup="file_mover_cleanup.sh"
 fm_cleanup_boot="/etc/init.d/file_mover_cleanup.sh"
 
 success=0
@@ -39,14 +39,14 @@ success=$(($success|$?))
 
 
 # new rules for usb node 
-sudo mv /home/pi/RaspberryPi-Server/file_mover/10-usbstick.rules /etc/udev/rules.d/
+sudo mv 10-usbstick.rules /etc/udev/rules.d/
 success=$(($success|$?))
 
 
 # set script to be run on insertion of usb 
 sudo mkdir /usr/lib/udev/
 success=$(($success|$?))
-sudo mv /home/pi/RaspberryPi-Server/file_mover/usbkey.sh /usr/lib/udev/
+sudo mv usbkey.sh /usr/lib/udev/
 success=$(($success|$?))
 sudo chmod 777 /usr/lib/udev/usbkey.sh
 success=$(($success|$?))
