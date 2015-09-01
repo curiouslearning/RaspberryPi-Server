@@ -34,5 +34,5 @@ success=$(($success|$?))
 sudo update-rc.d archiver_cleanup.sh defaults
 success=$(($success|$?))
 
-echo "$success"
+
 exit "$success"
