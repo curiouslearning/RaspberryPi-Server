@@ -5,10 +5,9 @@
 # tests archiver
 #
 
-source /home/pi/RaspberryPi-Server/config.sh
-source /home/pi/RaspberryPi-Server/counter.sh
-source /home/pi/RaspberryPi-Server/array_intersect_utils.sh
-
+source ../config.sh
+source ../counter.sh
+source ../array_intersect_utils.sh
 
 
 # Warning: these tests need to be run in a clean environment
@@ -75,7 +74,7 @@ function test_duplication() {
 	done
 
 	# run cleanup adn check if it is successful. TODO: relative
-	/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh
+	./archiver_cleanup.sh
 	success=$( arch_success files_to_archive[@] )
 
 	if [[ "$3" -gt 0 && "$success" == "true" ]]; then
@@ -117,12 +116,7 @@ function test_partial_tar() {
 	# create tar
 	(cd $data_dir && sudo tar -czf $archiver_temp$(date +%s).tar.gz "${files_to_archive[@]##*/}")
 	
-	echo "about to run archiver cleanup"
-
-	# run cleanup script TODO: use relative path here
-	/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh
-
-	echo "finished running archiver cleanup"
+	./archiver_cleanup.sh
 
 	# check that it worked
 	success=$( arch_success dbs[@] )
@@ -150,7 +144,7 @@ function test_normal_operation() {
 	local dbs=($( create_dummy_files $1 ".db" "$data_dir" ))
 	
 	# create archives
-	/home/pi/RaspberryPi-Server/archiver/archiver.sh
+	./archiver.sh
 
 	# check that archiver was successful
 	success=$( arch_success dbs[@] )
