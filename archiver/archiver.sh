@@ -5,9 +5,8 @@
 # archives tablet data
 #
 
-# get variables from config
-source /home/pi/RaspberryPi-Server/config.sh
-source /home/pi/RaspberryPi-Server/logger.sh
+source ../config.sh
+source ../logger.sh
 extension=".db"
 
 
