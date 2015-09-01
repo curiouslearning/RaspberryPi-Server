@@ -7,16 +7,16 @@
 #
 
 
-source /home/pi/RaspberryPi-Server/config.sh
-source /home/pi/RaspberryPi-Server/logger.sh
-source /home/pi/RaspberryPi-Server/counter.sh
+source ../config.sh
+source ../logger.sh
+source ../counter.sh
 
 in_test_mode="true" 
 files_to_delete=0 # TODO: remove this
 files_deleted=0
 
 function main() {
-	echo "running space manager on $(date)" >> "$space_manager_log" 
+	echo "running space manager on $(date)" >> "space_manager_log.txt"
 	local space_needed=0
 	local success_making_space=0 # 0 indicates success
 	local space_avail="$( python3 available_space.py )"
@@ -40,7 +40,7 @@ function main() {
 		make_space
 		# capture exit status of make_space
 		success_making_space=$?
-		log_status $success_making_space "making space" "$space_manager_log" 
+		log_status $success_making_space "making space" "space_manager_log.txt"
 		temp="$( python3 available_space.py )"
 		while [[ $temp -eq $space_avail && $success_making_space -eq 0 ]]; do
 			echo "just deleted file but didnt register still $temp" >> "test_log.txt"
@@ -99,7 +99,7 @@ function delete_oldest_file() {
 
 	success=$?
 	if [[ "$in_test_mode" == "false" ]]; then
-		log_status "$success" "deleting file: $1$file to make space" "$space_manager_log"
+		log_status "$success" "deleting file: $1$file to make space" "space_manager_log.txt"
 	else
 		files_deleted=$(( $files_deleted+1 ))
 		echo "$1$file" >> deleted_files.txt
