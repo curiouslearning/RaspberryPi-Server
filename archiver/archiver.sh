@@ -11,7 +11,7 @@ extension=".db"
 
 
 function main() {
-	echo "running archiver $(date)" >> "$archiver_log"
+	echo "running archiver $(date)" >> archiver_log.txt
 
 	# is there >= one file in the directory with the extension
 	if [[ $(cd "$data_dir" && ls -c *$extension | wc -l) -gt 0 ]]; then
@@ -34,27 +34,27 @@ function archive_dir() {
 	# get list of files to tar
 	local archive_files=($1*$2)
 	success=$?
-	log_status $success "getting list of files to archive" "$archiver_log"
+	log_status $success "getting list of files to archive" "archiver_log.txt"
 
 	# use seconds since epoch as archive name
 	if [[ "$success" -eq 0 ]]; then
 		local arc_name=$(date +%s)
 		success=$?
-		log_status $success "getting seconds since epoch" "$archiver_log"
+		log_status $success "getting seconds since epoch" "archiver_log.txt"
 	fi
 
 	# create archive in temp folder
 	if [[ "$success" -eq 0 ]]; then
 		(cd $1 && sudo tar -czf $archiver_temp$arc_name.tar.gz ${archive_files[@]##*/})
 		success=$?
-		log_status $success "archiving files" "$archiver_log"
+		log_status $success "archiving files" "archiver_log.txt"
 	fi
 
 	# move archived files out of temp
 	if [[ "$success" -eq 0 ]]; then
 		sudo mv $archiver_temp$arc_name.tar.gz $3$arc_name.tar.gz
 		success=$?
-		log_status $success "moving archive from temp" "$archiver_log"
+		log_status $success "moving archive from temp" "archiver_log.txt"
 	fi
 
 	# remove archived files
@@ -62,7 +62,7 @@ function archive_dir() {
 		# remove listed files and write names
 		sudo rm ${archive_files[@]} # check that this works
 		success=$?
-		log_status $success "removing archived files" "$archiver_log"
+		log_status $success "removing archived files" "archiver_log.txt"
 	fi
 
 	return "$success"
