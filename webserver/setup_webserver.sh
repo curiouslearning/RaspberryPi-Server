@@ -4,7 +4,7 @@
 # Installs php and apache2 on Pi for webserver
 #
 
-source /home/pi/RaspberryPi-Server/config.sh
+source ../config.sh
 success=0
 
 
@@ -22,9 +22,14 @@ success=$(($success|$?))
 # swap index.html for our index.php (might want that path in config) 
 sudo rm /var/www/index.html
 success=$(($success|$?))
-sudo mv /home/pi/RaspberryPi-Server/webserver/index.php /var/www/index.php
+sudo mv index.php /var/www/index.php
 success=$(($success|$?))
 sudo chmod 755 /var/www/index.php   # check that this is necessary
+success=$(($success|$?))
+
+
+# install sql lite
+sudo apt-get -y install sqlite3 
 success=$(($success|$?))
 
 
