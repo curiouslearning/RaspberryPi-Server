@@ -10,7 +10,6 @@ data_dir="/mnt/s3/globallit-tabletdata/"
 
 # archiver.sh 
 archive_dir="/mnt/s3/tabletdata_archive/"
-archiver_log="/home/pi/RaspberryPi-Server/archiver/archiver_log.txt"
 archiver_temp="/mnt/s3/archiver_temp/"
 
 
@@ -18,9 +17,7 @@ archiver_temp="/mnt/s3/archiver_temp/"
 usb_mnt_point="/mnt/usb/"
 file_mover_temp="/mnt/s3/file_mover_temp/"
 backup_dir="/mnt/s3/tabletdata_backups/"
-file_mover_log="/home/pi/RaspberryPi-Server/file_mover/file_mover_log.txt"
 
 
 # space manager
-space_manager_log="/home/pi/RaspberryPi-Server/space_manager/space_manager_log.txt"
-
+min_required_space=1000000 # in kb = 1GB
