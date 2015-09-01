@@ -18,12 +18,12 @@ source ../array_intersect_utils.sh
 
 
 function main() {
-	echo "running file_mover_cleanup on $( date )" >> "$file_mover_log"
+	echo "running file_mover_cleanup on $( date )" >> file_mover_log.txt
 
 	# error with file transfer process and usb is inserted
 	if [[ $( mount | grep /mnt/usb ) != "" && 
 	      $( num_files_in_dir "$file_mover_temp" ) -gt 0 ]]; then
-		echo "files in temp and usb mounted" >> "$file_mover_log"
+		echo "files in temp and usb mounted" >> file_mover_log.txt
 		./file_mover.sh
 	fi
 

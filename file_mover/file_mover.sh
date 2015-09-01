@@ -11,7 +11,7 @@ source /home/pi/RaspberryPi-Server/config.sh
 
 
 function main() {
-	echo "running file_mover.sh on $(date)" >> "$file_mover_log"
+	echo "running file_mover.sh on $(date)" >> file_mover_log.txt
 	local success=0
 
 	# are there files to move ?
@@ -32,32 +32,32 @@ function move_files() {
 	# array of files to be moved
 	archived_files=( "$archive_dir"* )
 	success=$?
-	log_status $success "getting list of archives" "$file_mover_log"
+	log_status $success "getting list of archives" file_mover_log.txt
 
 	if [[ $success -eq 0 ]]; then 
 		sudo cp $archive_dir* "$file_mover_temp"
 		success=$?
-		log_status $success "copying archives to temp" "$file_mover_log"
+		log_status $success "copying archives to temp" file_mover_log.txt
 	fi 	
 
 	if [[ $success -eq 0 ]]; then 
 		# copy files from temp to usb
 		sudo cp $file_mover_temp* $usb_mnt_point	
 		success=$?
-		log_status $success "copying archives to usb" "$file_mover_log"
+		log_status $success "copying archives to usb" file_mover_log.txt
 	fi
 	
 	if [[ $success -eq 0 ]]; then 
 		# move files from temp to backups
 		sudo mv "$file_mover_temp"* "$backup_dir"
 		success=$?
-		log_status $success "backing up archives" "$file_mover_log"
+		log_status $success "backing up archives" file_mover_log.txt
 	fi
 
 	if [[ $success -eq 0 ]]; then 
 		# remove backedup files from archive
 		sudo rm ${archived_files[@]}
-		log_status $success "removing backups from archive" "$file_mover_log"
+		log_status $success "removing backups from archive" file_mover_log.txt
 	fi
 
 	return "$success"
