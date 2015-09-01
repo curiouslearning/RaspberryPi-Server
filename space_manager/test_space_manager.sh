@@ -12,11 +12,6 @@ test_success="never_set"
 # warning for this test to work properly the directories used
 # must be empty
 function main() {
-	echo "$( test_space_manager 0 1 3 1 )"
-}
-
-function main2() {
-	echo "ye"
 	for (( i=0; i<$1; i++ )); do
 		for (( j=0; j<$1; j++ )); do
 			for (( k=0; k<$1; k++ )); do
@@ -28,6 +23,10 @@ function main2() {
 			done
 		done
 	done
+}
+
+function main2() {
+	echo "ye"
 }
 
 
@@ -51,17 +50,16 @@ function test_space_manager() {
 	local space_needed=$( python3 available_space.py )
 
 	local files_to_delete=("${files[@]:0:$4}")
-	echo "files to deleted: ${files_to_delete[@]}" >> "test_log.txt"
+	echo "files to delete: ${files_to_delete[@]}" >> "test_log.txt"
 
 	local files_to_keep=("${files[@]:$4}")
 	echo "files to keep: ${files_to_keep[@]}" >> "test_log.txt"
 	
 	# we will have only have enough extra space for the files to keep 
-	for f in "${files_to_keep[@]}"; do
-		# subtract sizeof(f) in kb
-		echo "sub size of "$f" to space needed" >> "test_log.txt"
-		space_needed=$(( $space_needed-$( du "$f" | cut -f1 ) ))
+	for f in "${files_to_delete[@]}"; do
+		space_needed=$(( $space_needed+4 )) # $( du "$f" | cut -f1 ) ))
 	done
+	echo "space_needed final: $space_needed" >> "test_log.txt"
 
 	# run the space manager with space needed
 	./space_manager.sh "$space_needed" "$4" # TODO: remove extra param

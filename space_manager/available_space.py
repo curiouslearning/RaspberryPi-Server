@@ -6,10 +6,13 @@
 
 import subprocess
 import sys
+import time
 
 AVAILABLE_SPACE_INDEX = 10
 
 def main():
+	# pause for deletions, TODO: find a better way
+	time.sleep(1)
 	space = avail_space()	
 	print(space)
 
