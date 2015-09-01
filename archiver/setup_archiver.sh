@@ -7,8 +7,8 @@
 # exits with 0 if successful and another number otherwise
 #
 
-source /home/pi/RaspberryPi-Server/config.sh
-arc_cleanup="/home/pi/RaspberryPi-Server/archiver/archiver_cleanup.sh"
+source ../config.sh
+arc_cleanup="archiver_cleanup.sh"
 arc_cleanup_boot="/etc/init.d/archiver_cleanup.sh"
 
 success=0
