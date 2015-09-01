@@ -6,54 +6,54 @@
 # and if there is not, delete files to make room
 #
 
+
 source /home/pi/RaspberryPi-Server/config.sh
 source /home/pi/RaspberryPi-Server/logger.sh
 source /home/pi/RaspberryPi-Server/counter.sh
 
 in_test_mode="true" 
-
+files_to_delete=0 # TODO: remove this
+files_deleted=0
 
 function main() {
 	echo "running space manager on $(date)" >> "$space_manager_log" 
-
-	# $1 is minimum space required in test mode
-	local test_space_needed=$1
-
- 	# see if there is sufficent space i.e. at least 1GB free
-	local has_space=$( has_free_space $test_space_needed )
+	local space_needed=0
 	local success_making_space=0 # 0 indicates success
+	local space_avail="$( python3 available_space.py )"
+	local temp=0 # TODO: get rid of this
+
+	echo "space initially available: $space_avail" >> "test_log.txt"
+
+	if [[ "$in_test_mode" == "true" ]]; then
+		# $1 is minimum space required in test mode
+		space_needed=$1
+		files_to_delete=$2
+	else
+		space_needed=$min_required_space
+	fi
+
+	echo "initial space needed: $space_needed" >> "test_log.txt"
 
 	# delete files until there is sufficent free space on Pi
-	while [[ "$has_space" == "false" && "$success_making_space" -eq 0 ]]; do
+	while [[ "$space_avail" -lt $space_needed && 
+		  "$success_making_space" -eq 0 ]]; do
 		make_space
 		# capture exit status of make_space
 		success_making_space=$?
 		log_status $success_making_space "making space" "$space_manager_log" 
-		# see if we still need more space
-		local has_space=$( has_free_space $1 )
+		temp="$( python3 available_space.py )"
+		while [[ $temp -eq $space_avail && $success_making_space -eq 0 ]]; do
+			echo "just deleted file but didnt register still $temp" >> "test_log.txt"
+			echo "trying again" >> "test_log.txt"
+			temp=$( python3 available_space.py )	
+		done
+		space_avail=$temp	
+
+		echo "space available at loop end: $space_avail" >> "test_log.txt"
+		echo "space needed: $space_needed" >> "test_log.txt"
 	done
 	exit "$success_making_space"
 }
-
-
-# purp: outputs true if the pi has enough space and false otherwise
-# args: $1 - free space needed for pi in test mode
-function has_free_space() {
-	local_has_space="true"
-	# TODO: use relative path
-	local free_space=$(python3 available_space.py)
-
-	if [[ "$test_mode" == "true" ]]; then
-		if [[ "$free_space" -lt "$1" ]]; then
-			has_space="false"
-		fi
-	elif [[ "$free_space" -lt "$min_required_space" ]]; then
-		has_space="false"
-	fi
-
-	echo "$has_space"
-}
-
 
 
 # purp: deletes the oldest file/archive from backups, archive, data
@@ -79,7 +79,6 @@ function make_space() {
 		delete_oldest_file "$data_dir"
 		exit_status=$(($exit_status|$?))
 	else 
-		echo "nothing to delete"
 		# there was some type of failure
 		exit_status=1	
 	fi
@@ -102,11 +101,13 @@ function delete_oldest_file() {
 	if [[ "$in_test_mode" == "false" ]]; then
 		log_status "$success" "deleting file: $1$file to make space" "$space_manager_log"
 	else
+		files_deleted=$(( $files_deleted+1 ))
 		echo "$1$file" >> deleted_files.txt
+		echo "deleted $1$file" >> "test_log.txt"
 	fi
+
 
 	return $success
 }
 
-
-main
+main $1 $2
