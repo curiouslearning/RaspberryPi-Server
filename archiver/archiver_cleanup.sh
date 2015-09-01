@@ -12,7 +12,7 @@
 # By Jason Krone for Curious Learning
 # Date: July 31, 2015
 
-
+# TODO: put some more logging in here
 
 source ../config.sh
 source ../counter.sh
@@ -20,12 +20,11 @@ source ../array_intersect_utils.sh
 
 
 function main() {
-	echo "running archiver_cleanup on $(date)" >> "$archiver_log"
+	echo "running archiver_cleanup on $(date)" >> archiver_log.txt
 
 	# failure to remove files
 	if [[ $( num_files_in_dir "$archive_dir" ) -gt 0 && 
 	      $( num_files_in_dir "$data_dir" ) -gt 0 ]]; then
-		echo "up in here"
 		# get most recent archive 
 		local newest_tar=$( ls -t "$archive_dir" | head -1 )	
 
@@ -37,7 +36,6 @@ function main() {
 
 		# get intersection 
 		local duplicates=($( intersection data_files[@] tar_files[@] file_eq ))
-		echo "duplicates: ${duplicates[@]}"
 
 		# delete intersection 
 		sudo rm ${duplicates[@]} 
