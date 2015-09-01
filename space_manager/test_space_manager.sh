@@ -7,21 +7,27 @@
 
 source /home/pi/RaspberryPi-Server/config.sh
 source /home/pi/RaspberryPi-Server/array_intersect_utils.sh
-
+test_success="never_set"
 
 # warning for this test to work properly the directories used
 # must be empty
 function main() {
-	test_space_manager 1 1 1 1
+	echo "$( test_space_manager 0 1 3 1 )"
+}
 
-	# set the limit to that and then create a number of files
-	# create files mix of backups , archives, data
-	# for ((b=0;b < $1; b++ )); do
-	#	for (( a=0; a<$1; a++ )); do
-	#		for (( d=0; d<$1; d++ )); do
-	#			#will need to run test in here
-	#
-
+function main2() {
+	echo "ye"
+	for (( i=0; i<$1; i++ )); do
+		for (( j=0; j<$1; j++ )); do
+			for (( k=0; k<$1; k++ )); do
+				for (( d=0; d<=$(($i+$j+$k)); d++)); do
+					echo "run with $i dbs $j arch $k backups $d files to delete" >> "test_log.txt"
+					output=$( test_space_manager $i $j $k $d )
+					echo "output: $output             oprinted" >> "test_log.txt"
+				done
+			done
+		done
+	done
 }
 
 
@@ -30,11 +36,9 @@ function main() {
 # args: $1 - dbs, $2 - archives, $3 - backups, $4 - num files to delete
 # $4 must be <= $1 + $2 + $3
 function test_space_manager() {
-	echo "in test, creating $1 db files, $2 archives, and $3 backups"
 	# get space	
-	local space=$( python3 space_kb.py )
-	echo "space: $space"
-	echo "files to delete: $4"
+	local success="never_set"
+
 		
 	# the order of the following lines matters
 	local files=()
@@ -42,45 +46,47 @@ function test_space_manager() {
 	files+=($( create_dummy_files "$2" ".tar.gz" "$archive_dir" ))
 	files+=($( create_dummy_files "$1" ".db" "$data_dir" ))
 	
-	echo "files created: ${files[@]}"
+	#echo "files created: ${files[@]}"
 
-	space_needed="$space"
+	local space_needed=$( python3 available_space.py )
+
 	local files_to_delete=("${files[@]:0:$4}")
+	echo "files to deleted: ${files_to_delete[@]}" >> "test_log.txt"
+
 	local files_to_keep=("${files[@]:$4}")
+	echo "files to keep: ${files_to_keep[@]}" >> "test_log.txt"
 	
 	# we will have only have enough extra space for the files to keep 
 	for f in "${files_to_keep[@]}"; do
-		# add sizeof(f) in kb
-		echo "adding size of "$f" to space needed"
-		space_needed=$(( $space_needed+$( du "$f" | cut -f1 ) ))
-		echo "new space needed: $space_needed"
+		# subtract sizeof(f) in kb
+		echo "sub size of "$f" to space needed" >> "test_log.txt"
+		space_needed=$(( $space_needed-$( du "$f" | cut -f1 ) ))
 	done
 
-
-	#- create a testing flag that will take this as input from command line
 	# run the space manager with space needed
-	# ./space_manager.sh "$space_needed"
-        # TODO: this won't work unless you change the process from bool to num in loop
+	./space_manager.sh "$space_needed" "$4" # TODO: remove extra param
 		
-	check_success files_to_keep[@] files_to_delete[@]
+	success=$( space_manager_success files_to_keep[@] files_to_delete[@] )
 
 	# cleanup i.e. remove files kept
-	sudo rm "${files_to_keep[@]}"
-	sudo rm "${files_to_delete[@]}" # probably don't need this 
+	if [[ "${#files_to_keep[@]}" -gt 0 ]]; then
+		 sudo rm "${files_to_keep[@]}"
+	fi
+	
+	echo "$success"
 }
 
 
-function check_success() {
+function space_manager_success() {
 	local success="true"
 	local kept_files=("${!1}")
-	echo "kept files: $kept_files"
-	local deleted_files=( some/file/a some/file/b some/file/c ) #("${!2}")
+	local deleted_files=("${!2}")
 
 	# check that none of the kept files were deleted
 	for f in "${kept_files[@]}"; do
 		# if file does not exist then there was a problem
 		if [[ ! -e "$f" ]]; then
-			echo "$f which shouldn't have been deleted isn't there"
+			echo "$f which shouldn't have been deleted isn't there" >> "test_log.txt"
 			success="false"
 			break
 		fi
@@ -89,17 +95,22 @@ function check_success() {
 	# check that all the files that should have been deleted were
 	# get array of files in the order they were deleted by sm
 	deletion_log=($( open_file "deleted_files.txt" )) # TODO create tag
-	echo "deletion log: ${deletion_log[@]}"
+	echo "" > deleted_files.txt
 
 	local len="${#deletion_log[@]}"
-	echo "deletion log length: $len"
+
+	if [[ $len -ne "${#deleted_files[@]}" ]]; then
+		echo "size of the deletion log isn't the same as the files to be deleted arr" >> "test_log.txt"
+		echo "deletion log has $len elements and to_delete has ${#deleted_files[@]}" >> "test_log.txt"
+		success="false"
+	fi
 
 	for ((i=0; i<"$len"; i++ )); do
 		if [[ "${deleted_files[i]}" != "${deletion_log[i]}" ]]; then
+			echo "deleted files don't match deletion log" >> "test_log.txt"
+			echo "deleted files: ${deleted_files[@]}  , deletion log: ${deletion_log[@]}"
 			success="false"
 			break
-		else
-			echo "${deleted_files[i]} == ${deletion_log[i]}"
 		fi
 	done 
 
@@ -113,8 +124,8 @@ function open_file() {
 	local i=0
 	local array=()
 
-	while read line; do # Read a line
-		array[i]=$line # Put it into the array
+	while read line; do
+		array[i]=$line
 		i=$(($i + 1))
 	done < $1
 
@@ -122,4 +133,4 @@ function open_file() {
 } 
 
 
-main
+main 4
