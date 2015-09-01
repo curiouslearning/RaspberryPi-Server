@@ -4,9 +4,9 @@
 # contains utility functions for arrays
 #
 
-
+# TODO: change location of dummy file
 dummy_file="/home/pi/RaspberryPi-Server/archiver/dummy_file"
-source /home/pi/RaspberryPi-Server/counter.sh
+source counter.sh
 
 
 # purp: creates the given number of dummy files
