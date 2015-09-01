@@ -6,45 +6,45 @@
 #
 
 # todo change all this to relative imports
-source /home/pi/RaspberryPi-Server/config.sh
-source /home/pi/RaspberryPi-Server/counter.sh
-source /home/pi/RaspberryPi-Server/array_intersect_utils.sh
+source ../config.sh
+source ../counter.sh
+source ../array_intersect_utils.sh
 
 
 # Warning: directories used must be empty and
 # usb must be mounted for these tests to work
 function main() {
 	
-	#echo "testing normal functiionality"
-	# test normal oporation
-	#for (( i=1; i<"$1"; i++ )); do
-	#	echo "norm test: $( test_mover_norm  $i )"
-	#done
+	echo "testing normal functiionality"
+	test normal oporation
+	for (( i=1; i<"$1"; i++ )); do
+		echo "norm test: $( test_mover_norm  $i )"
+	done
 
 	# test partial copy to temp
-	#for (( i=1; i<"$1"; i++ )); do
-	#	for (( j=1; j<"$i"; j++ )); do 
-	#		echo "partial temp: $( test_partial_copy_temp $i $j )"
-	#	done
-	#done
+	for (( i=1; i<"$1"; i++ )); do
+		for (( j=1; j<"$i"; j++ )); do 
+			echo "partial temp: $( test_partial_copy_temp $i $j )"
+		done
+	done
 
 
-	#echo "testing partial copy usb"
+	echo "testing partial copy usb"
 	# test partial copy from temp to usb
-	# for (( i=1; i<"$1"; i++ )); do
-	#	for (( j=1; j<"$i"; j++ )); do 
-	#		echo "partial usb: $( test_partial_copy_usb $i $j )"
-	#	done
-	# done
+	for (( i=1; i<"$1"; i++ )); do
+		for (( j=1; j<"$i"; j++ )); do 
+			echo "partial usb: $( test_partial_copy_usb $i $j )"
+		done
+	done
 
 	# test failure to backup moved files from temp
-	# echo "testing partial backup"
-	#for (( i=1; i<"$1"; i++ )); do
-	#	for (( j=1; j<"$i"; j++ )); do 
-	#		echo "called with $i -files and $j backups"
-	#		echo "partial backup: $( test_partial_backup $i $j )"
-	#	done
-	#done
+	echo "testing partial backup"
+	for (( i=1; i<"$1"; i++ )); do
+		for (( j=1; j<"$i"; j++ )); do 
+			echo "called with $i -files and $j backups"
+			echo "partial backup: $( test_partial_backup $i $j )"
+		done
+	done
 
 
 	echo "testing duplicates"
@@ -82,7 +82,7 @@ function test_duplicates() {
 	done
 	
 	# run cleanup . TODO: relative path
-	/home/pi/RaspberryPi-Server/file_mover/file_mover_cleanup.sh
+	./file_mover_cleanup.sh
 	
 	success=$( file_mover_success arcs_to_move[@] )
 	
@@ -122,8 +122,7 @@ function test_partial_backup() {
 	sudo cp "${archives[@]}" $usb_mnt_point
 	sudo mv "${archives[@]:0:$2}" $backup_dir
 
-	# run cleanup TODO: math path rfelative
-	/home/pi/RaspberryPi-Server/file_mover/file_mover_cleanup.sh
+	./file_mover_cleanup.sh
 
 	# check if it was successful
 	success=$( file_mover_success archives[@] )
@@ -147,8 +146,7 @@ function test_partial_copy_usb() {
 	sudo cp "${archives[@]}" $file_mover_temp
 	sudo cp "${archives[@]:0:$2}" $usb_mnt_point
 
-	# run cleanup TODO: math path rfelative
-	/home/pi/RaspberryPi-Server/file_mover/file_mover_cleanup.sh
+	./file_mover_cleanup.sh
 
 	# check if it was successful
 	success=$( file_mover_success archives[@] )
@@ -174,8 +172,8 @@ function test_partial_copy_temp() {
 	local archives=($( create_dummy_files "$1" ".tar.gz" "$archive_dir" ))
 	sudo cp "${archives[@]}" $file_mover_temp
 
-	# run cleanup TODO: math path rfelative
-	/home/pi/RaspberryPi-Server/file_mover/file_mover_cleanup.sh
+	# run cleanup
+	./file_mover_cleanup.sh
 
 	# check if it was successful
 	success=$( file_mover_success archives[@] )
@@ -207,8 +205,7 @@ function test_mover_norm() {
 	# create files to move
 	local archives=($( create_dummy_files "$1" ".tar.gz" "$archive_dir" ))
 
-	# run file mover TODO: 	make path relative
-	/home/pi/RaspberryPi-Server/file_mover/file_mover.sh
+	./file_mover.sh
 
 	success=$( file_mover_success archives[@] )
 
