@@ -5,8 +5,9 @@
 #
 
 # TODO: change location of dummy file
+base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 dummy_file="/home/pi/RaspberryPi-Server/archiver/dummy_file"
-source counter.sh
+source $base_path/counter.sh
 
 
 # purp: creates the given number of dummy files
