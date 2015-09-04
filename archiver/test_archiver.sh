@@ -5,9 +5,11 @@
 # tests archiver
 #
 
-source ../config.sh
-source ../counter.sh
-source ../array_intersect_utils.sh
+raspi_base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )
+
+source "$raspi_base_path"/config.sh
+source "$raspi_base_path"/counter.sh
+source "$raspi_base_path"/array_intersect_utils.sh
 
 
 # Warning: these tests need to be run in a clean environment
@@ -74,7 +76,7 @@ function test_duplication() {
 	done
 
 	# run cleanup adn check if it is successful. TODO: relative
-	./archiver_cleanup.sh
+	"$raspi_base_path"/archiver/archiver_cleanup.sh
 	success=$( arch_success files_to_archive[@] )
 
 	if [[ "$3" -gt 0 && "$success" == "true" ]]; then
@@ -116,7 +118,7 @@ function test_partial_tar() {
 	# create tar
 	(cd $data_dir && sudo tar -czf $archiver_temp$(date +%s).tar.gz "${files_to_archive[@]##*/}")
 	
-	./archiver_cleanup.sh
+	"$raspi_base_path"/archiver/archiver_cleanup.sh
 
 	# check that it worked
 	success=$( arch_success dbs[@] )
@@ -144,7 +146,7 @@ function test_normal_operation() {
 	local dbs=($( create_dummy_files $1 ".db" "$data_dir" ))
 	
 	# create archives
-	./archiver.sh
+	"$raspi_base_path"/archiver/archiver.sh
 
 	# check that archiver was successful
 	success=$( arch_success dbs[@] )
