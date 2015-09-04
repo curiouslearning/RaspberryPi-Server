@@ -7,9 +7,13 @@
 # exits with 0 if successful and another number otherwise
 #
 
-source ../config.sh
+raspi_base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )
+source "$raspi_base_path/config.sh
+
+
 arc_cleanup="archiver_cleanup.sh"
 arc_cleanup_boot="/etc/init.d/archiver_cleanup.sh"
+
 
 success=0
 

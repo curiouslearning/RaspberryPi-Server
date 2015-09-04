@@ -5,11 +5,13 @@
 # archives tablet data
 #
 
-source ../config.sh
-source ../logger.sh
+
+raspi_base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )
+source "$raspi_base_path"/config.sh
+source "$raspi_base_path"/logger.sh
+
 
 extension=".db"
-
 # path from clone dir used for logging
 archiver_log_path="archiver/archiver_log.txt"
 
