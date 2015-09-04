@@ -5,18 +5,20 @@
 # of function call
 #
 
+# grab path to RaspberryPi-Server dir
+raspi_base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 
-# purp: appends message with body given in arg2 to the given file
+# purp: appends message with the given body to the given file
 # with the prefix success if arg1 is 0 and the prefix failure if
 # arg1 is non-zero
-# args: arg1 - exit_value, arg2 - body of message, arg3 - file path
+# args: arg1 - exit_value, arg2 - body of message, arg3 - file path from base path
 # rets: nothing
 function log_status() {
 	if [[ $1 -eq 0 ]]; then
-		echo "success $2" >> "$3" 
+		echo "success $2" >> "$raspi_base_path$3" 
 	else
-		echo "failure $2" >> "$3"
+		echo "failure $2" >> "$raspi_base_path$3"
 	fi
 }
 
