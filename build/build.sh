@@ -9,6 +9,9 @@ source ../logger.sh
 build_log_path="build/build_log.txt"
 
 function main() {
+	( cd .. && echo $( pwd ) > base_path.txt )
+	log_status $? "getting base path" "$build_log_path"
+
 	../webserver/setup_webserver.sh
 	log_status $? "setting up webserver" "$build_log_path"
 

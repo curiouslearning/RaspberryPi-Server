@@ -10,6 +10,7 @@ ACTION=$(expr "$ACTION" : "\([a-zA-Z]\+\).*")
 tablet_update_script="/mnt/usb/globallit_tablet_updates.sh"
 mnt_point="/mnt/usb/"
 
+
 function main() {
 	local success=0
 

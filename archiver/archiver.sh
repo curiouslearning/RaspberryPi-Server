@@ -15,7 +15,7 @@ archiver_log_path="archiver/archiver_log.txt"
 
 
 function main() {
-	echo log_status 0 "running archiver on $(date)" "$archiver_log_path"
+	log_status 0 "running archiver on $(date)" "$archiver_log_path"
 
 	# is there >= one file in the directory with the extension
 	if [[ $(cd "$data_dir" && ls -c *$extension | wc -l) -gt 0 ]]; then
