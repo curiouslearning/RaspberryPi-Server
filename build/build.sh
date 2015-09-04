@@ -9,7 +9,11 @@ source ../logger.sh
 build_log_path="build/build_log.txt"
 
 function main() {
-	( cd .. && echo $( pwd ) > base_path.txt )
+	# so it doesn't matter where we clone the server 
+	local raspi_base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )
+	sudo mkdir /usr/RaspberryPi-Server/
+	sudo chmod 777 /usr/RaspberryPi-Server/
+	sudo echo "$raspi_base_path" > /usr/RaspberryPi-Server/base_path.txt
 	log_status $? "getting base path" "$build_log_path"
 
 	../webserver/setup_webserver.sh

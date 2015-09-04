@@ -34,6 +34,10 @@ config.sh:
 	- single point of truth for directories used in multiple scripts
 
 
+logger.sh
+	- contains function to log messages associated with exit status
+
+
 Note: 
     - setup files in each directory are to be run at build time for the
     purpose of creating the directories/scheduling cron jobs neccessary
@@ -44,9 +48,22 @@ Note:
 |                         TECHNICAL   NOTES                                   |
 +-----------------------------------------------------------------------------+
 
+- Build script must be run from inside the build directory
+
+- usb_id file in file_mover directory must be on usb inserted into
+  raspberry pi if you want files to be moved to that usb
+
+- Directories used by tests must be empty when tests are run
+
 - Run .sh scripts with ./ if in directory or path to script NOT with sh 
 
 - Use python3 to run python scripts. Everything should be backwards compatable,
-but the scripts have only been tested using python3
+  but the scripts have only been tested using python3
+
+- Syntax for passing array to function 		array[@]
+  Syntax for getting array param		param=("{!1}") # replace 1 with param number
+
+
+
         
 
