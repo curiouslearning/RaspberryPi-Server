@@ -16,9 +16,9 @@ raspi_base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 # rets: nothing
 function log_status() {
 	if [[ $1 -eq 0 ]]; then
-		echo "success $2" >> "$raspi_base_path$3" 
+		echo "success $2" >> "$raspi_base_path/$3" 
 	else
-		echo "failure $2" >> "$raspi_base_path$3"
+		echo "failure $2" >> "$raspi_base_path/$3"
 	fi
 }
 
