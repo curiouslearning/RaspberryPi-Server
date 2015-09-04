@@ -9,7 +9,6 @@ source ../logger.sh
 build_log="build_log.txt"
 
 function main() {
-
 	../webserver/setup_webserver.sh
 	log_status $? "setting up webserver" "$build_log"
 
