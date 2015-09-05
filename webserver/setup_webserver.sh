@@ -4,7 +4,8 @@
 # Installs php and apache2 on Pi for webserver
 #
 
-source ../config.sh
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+source $raspi_base_path/config.sh
 success=0
 
 
@@ -28,8 +29,7 @@ sudo chmod 755 /var/www/index.php   # check that this is necessary
 success=$(($success|$?))
 
 
-# install sql lite
-sudo apt-get -y install sqlite3 
+sudo apt-get -y install mysql-server
 success=$(($success|$?))
 
 
