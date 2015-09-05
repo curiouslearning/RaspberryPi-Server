@@ -7,8 +7,10 @@
 
 ACTION=$(expr "$ACTION" : "\([a-zA-Z]\+\).*")
 
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+source $raspi_base_path/config.sh
+
 tablet_update_script="/mnt/usb/globallit_tablet_updates.sh"
-mnt_point="/mnt/usb/"
 
 
 function main() {
@@ -18,7 +20,7 @@ function main() {
 		mount_file_mover_usb
 		if [[ "$?" -eq 0 ]]; then
 			# move archives to usb 
-			./file_mover.sh 
+			$raspi_base_path/file_mover/file_mover.sh 
 
 			# run tablet updates if it exist on usb
 			[ -f "$tablet_update_script" ] && "$tablet_update_script"
@@ -28,7 +30,7 @@ function main() {
 		fi
 	else
 	# usb is being removed
-		sudo umount "$mnt_point" 
+		sudo umount "$usb_mnt_point" 
 		success=$?
 	fi
 	exit "$success"
@@ -41,13 +43,13 @@ function main() {
 # rets: 0 if the node is mounted and 1 otherwise
 function mount_file_mover_usb() {
 	local success=0
-	sudo mount "$mnt_point" 
+	sudo mount "$usb_mnt_point" 
 	
 	if [[ "$?" -eq 0 ]]; then
 		# check that this is a file_mover usb
 		if [[ $( cat /mnt/usb/usb_id ) != "file_mover_usb" ]]; then
 			# usb is not meant to store files
-			sudo umount "$mnt_point"
+			sudo umount "$usb_mnt_point"
 			success=1
 		fi
 	else
