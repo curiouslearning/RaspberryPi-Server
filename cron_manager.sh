@@ -6,7 +6,7 @@
 # 
 
 raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
-source "$raspi_base_path"/logger.sh
+source "$raspi_base_path"/utils/logger.sh
 source "$raspi_base_path"/config.sh
 
 space_manager="$raspi_base_path/space_manager/space_manager.sh"

@@ -1,14 +1,14 @@
 # array_intersect_utils.sh
 # By Jason Krone for Curious Learning
 # Date: August 14, 2015
-# contains utility functions for arrays
+# contains utility functions for cleanup and test scripts
 #
 
 # TODO: change location of dummy file
 raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
-source "$raspi_base_path"/counter.sh
+source "$raspi_base_path"/utils/counter.sh
 
-dummy_file="$raspi_base_path/archiver/dummy_file"
+dummy_file="$raspi_base_path/utils/dummy_file"
 
 
 # purp: creates the given number of dummy files

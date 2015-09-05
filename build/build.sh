@@ -5,9 +5,10 @@
 #
 
 # import logger
-source ../logger.sh
+source ../utils/logger.sh
 build_log_path="build/build_log.txt"
 
+# you must be in build dir when you run build script
 function main() {
 	# so it doesn't matter where we clone the server 
 	local raspi_base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )

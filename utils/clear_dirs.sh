@@ -1,6 +1,11 @@
 #!/bin/bash
+# by Jason Krone for Curious Learning
+# Date: Sept 5, 2015
+# clears everything needed for tests to run correctly 
 
-source /home/pi/RaspberryPi-Server/config.sh
+
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+source $raspi_base_path/config.sh
 
 function main() {
 	sudo rm "$data_dir"*
@@ -9,8 +14,8 @@ function main() {
 	sudo rm "$backup_dir"*
 	sudo rm "$file_mover_temp"*
 	sudo rm "$usb_mnt_point"*.gz
-	echo "" > space_manager/test_log.txt
-	echo "" > space_manager/deleted_files.txt
+	echo "" > $raspi_base_path/space_manager/test_log.txt
+	echo "" > $raspi_base_path/space_manager/deleted_files.txt
 }
 
 
