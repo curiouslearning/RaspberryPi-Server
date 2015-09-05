@@ -23,13 +23,15 @@ function main() {
 }
 
 
+# purp: runs the given script up to the given nuber of times or
+# until it is successful
 function run() {
-	failures=0
-	success=1
+	local failures=0
+	local success=1
 	while [[ $failures -lt "$2" && "$success" -eq 1 ]]; do
 		"$1"
 		success=$?
-		filures=$( expr $failures + 1)
+		failures=$(( $failures + 1 ))
 	done
 	return $?
 }
