@@ -5,10 +5,10 @@
 # tests file_mover
 #
 
-# todo change all this to relative imports
-source ../config.sh
-source ../counter.sh
-source ../array_intersect_utils.sh
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+source $raspi_base_path/config.sh
+source $raspi_base_path/counter.sh
+source $raspi_base_path/array_intersect_utils.sh
 
 
 # Warning: directories used must be empty and
@@ -16,11 +16,12 @@ source ../array_intersect_utils.sh
 function main() {
 	
 	echo "testing normal functiionality"
-	test normal oporation
+	# test normal oporation
 	for (( i=1; i<"$1"; i++ )); do
 		echo "norm test: $( test_mover_norm  $i )"
 	done
 
+	echo "testing partial copoy to temp"
 	# test partial copy to temp
 	for (( i=1; i<"$1"; i++ )); do
 		for (( j=1; j<"$i"; j++ )); do 
@@ -41,7 +42,6 @@ function main() {
 	echo "testing partial backup"
 	for (( i=1; i<"$1"; i++ )); do
 		for (( j=1; j<"$i"; j++ )); do 
-			echo "called with $i -files and $j backups"
 			echo "partial backup: $( test_partial_backup $i $j )"
 		done
 	done
@@ -81,8 +81,7 @@ function test_duplicates() {
 		rm "${arcs_to_move[i]}"
 	done
 	
-	# run cleanup . TODO: relative path
-	./file_mover_cleanup.sh
+	$raspi_base_path/file_mover/file_mover_cleanup.sh
 	
 	success=$( file_mover_success arcs_to_move[@] )
 	
@@ -122,12 +121,11 @@ function test_partial_backup() {
 	sudo cp "${archives[@]}" $usb_mnt_point
 	sudo mv "${archives[@]:0:$2}" $backup_dir
 
-	./file_mover_cleanup.sh
+	$raspi_base_path/file_mover/file_mover_cleanup.sh
 
 	# check if it was successful
 	success=$( file_mover_success archives[@] )
 
-	echo "names: ${names[@]}"
 	remove_test_files names[@]
 
 	echo "$success"
@@ -146,7 +144,7 @@ function test_partial_copy_usb() {
 	sudo cp "${archives[@]}" $file_mover_temp
 	sudo cp "${archives[@]:0:$2}" $usb_mnt_point
 
-	./file_mover_cleanup.sh
+	$raspi_base_path/file_mover/file_mover_cleanup.sh
 
 	# check if it was successful
 	success=$( file_mover_success archives[@] )
@@ -173,7 +171,7 @@ function test_partial_copy_temp() {
 	sudo cp "${archives[@]}" $file_mover_temp
 
 	# run cleanup
-	./file_mover_cleanup.sh
+	$raspi_base_path/file_mover/file_mover_cleanup.sh
 
 	# check if it was successful
 	success=$( file_mover_success archives[@] )
@@ -205,7 +203,7 @@ function test_mover_norm() {
 	# create files to move
 	local archives=($( create_dummy_files "$1" ".tar.gz" "$archive_dir" ))
 
-	./file_mover.sh
+	$raspi_base_path/file_mover/file_mover.sh
 
 	success=$( file_mover_success archives[@] )
 
