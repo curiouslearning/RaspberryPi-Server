@@ -15,6 +15,7 @@ raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
 # args: arg1 - exit_value, arg2 - body of message, arg3 - file path from base path
 # rets: nothing
 function log_status() {
+	#echo "writing to $raspi_base_path/$3"
 	if [[ $1 -eq 0 ]]; then
 		echo "success $2" >> "$raspi_base_path/$3" 
 	else

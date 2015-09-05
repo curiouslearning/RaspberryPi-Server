@@ -21,7 +21,7 @@ function main() {
 	local space_needed=0
 	local space_created=1
 	local success_making_space=0 # 0 indicates success
-	local initial_space="$( python3 available_space.py )"
+	local initial_space="$( python3 $raspi_base_path/space_manager/available_space.py )"
 	local space_avail=$initial_space
 
 	# TODO check using param1
@@ -93,7 +93,7 @@ function delete_oldest_file() {
 	if [[ "$in_test_mode" == "false" ]]; then
 		log_status "$success" "deleting file: $1$file to make space" "$space_manager_log"
 	else
-		echo "$1$file" >> $raspi/file_mover/deleted_files.txt
+		echo "$1$file" >> $raspi_base_path/space_manager/deleted_files.txt
 	fi
 
 	echo "$file_size"

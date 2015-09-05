@@ -14,45 +14,53 @@ source $raspi_base_path/array_intersect_utils.sh
 # Warning: directories used must be empty and
 # usb must be mounted for these tests to work
 function main() {
-	
 	echo "testing normal functiionality"
 	# test normal oporation
 	for (( i=1; i<"$1"; i++ )); do
-		echo "norm test: $( test_mover_norm  $i )"
+		if [[ $( test_mover_norm  $i ) != "true" ]]; then
+			echo "norm test: $i failed"
+		fi
 	done
 
 	echo "testing partial copoy to temp"
 	# test partial copy to temp
 	for (( i=1; i<"$1"; i++ )); do
 		for (( j=1; j<"$i"; j++ )); do 
-			echo "partial temp: $( test_partial_copy_temp $i $j )"
+			if [[ $( test_partial_copy_temp $i $j ) != "true" ]]; then
+				echo "partial temp: $i $j failed"
+			fi
 		done
 	done
-
 
 	echo "testing partial copy usb"
 	# test partial copy from temp to usb
 	for (( i=1; i<"$1"; i++ )); do
 		for (( j=1; j<"$i"; j++ )); do 
-			echo "partial usb: $( test_partial_copy_usb $i $j )"
+			if [[ $( test_partial_copy_usb $i $j ) != "true" ]]; then
+				echo "partial usb $i $j failed"
+			fi
 		done
 	done
+
 
 	# test failure to backup moved files from temp
 	echo "testing partial backup"
 	for (( i=1; i<"$1"; i++ )); do
 		for (( j=1; j<"$i"; j++ )); do 
-			echo "partial backup: $( test_partial_backup $i $j )"
+			if [[ $( test_partial_backup $i $j ) != "true" ]]; then
+				echo "partial backup: $i $j failed"
+			fi
 		done
 	done
-
 
 	echo "testing duplicates"
 	# failure to remove backedup files from archive
 	for (( i=1; i<"$1"; i++ )); do
 		for (( j=1; j<="$i"; j++ )); do
 			for (( k=0; k<"$1"; k++ )); do
-				echo "duplicates $i $j $k: $( test_duplicates $i $j $k )"
+				if [[ $( test_duplicates $i $j $k ) != "true" ]]; then
+					echo "duplicates $i $j $k failed"
+				fi
 			done
 		done
 	done
@@ -126,6 +134,7 @@ function test_partial_backup() {
 	# check if it was successful
 	success=$( file_mover_success archives[@] )
 
+	local names=("${archives[@]##*/}")
 	remove_test_files names[@]
 
 	echo "$success"

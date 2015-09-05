@@ -64,7 +64,7 @@ success=$(($success|$?))
 
 
 # set file_mover_cleanup.sh to be run on boot
-sudo mv "$fm_cleanup" "$fm_cleanup_boot" 
+sudo cp "$fm_cleanup" "$fm_cleanup_boot" 
 success=$(($success|$?))
 sudo chmod 777 "$fm_cleanup_boot"
 success=$(($success|$?))

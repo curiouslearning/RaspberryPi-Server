@@ -54,6 +54,7 @@ Note:
   raspberry pi if you want files to be moved to that usb
 
 - Directories used by tests must be empty when tests are run
+  USB must be plugged into pi when running file_mover tests
 
 - Run .sh scripts with ./ if in directory or path to script NOT with sh 
 
@@ -61,7 +62,7 @@ Note:
   but the scripts have only been tested using python3
 
 - Syntax for passing array to function 		array[@]
-  Syntax for getting array param		param=("{!1}") # replace 1 with param number
+  Syntax for getting array param		param=("${!1}") # replace 1 with param number
 
 
 

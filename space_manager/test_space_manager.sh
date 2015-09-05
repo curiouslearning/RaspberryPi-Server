@@ -9,6 +9,8 @@ raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
 source $raspi_base_path/config.sh
 source $raspi_base_path/array_intersect_utils.sh
 
+
+removed_log="$raspi_base_path/space_manager/deleted_files.txt"
 dummy_file_size=4 # in kb
 avail_space_diff="false"
 
@@ -59,7 +61,7 @@ function test_space_manager() {
 	files+=($( create_dummy_files "$1" ".db" "$data_dir" ))
 	
 	# get space after files are created	
-	local space_avail=$( python3 available_space.py )
+	local space_avail=$( python3 $raspi_base_path/space_manager/available_space.py )
 
 	local files_to_delete=("${files[@]:0:$4}")
 	local files_to_keep=("${files[@]:$4}")
@@ -136,8 +138,8 @@ function space_manager_success() {
 
 	# check that all the files that should have been deleted were
 	# get array of files in the order they were deleted by sm
-	local deletion_log=($( open_file "deleted_files.txt" )) # TODO create tag
-	echo "" > deleted_files.txt
+	local deletion_log=($( open_file "$removed_log" )) # TODO create tag
+	echo "" > "$removed_log"
 
 	local len="${#deletion_log[@]}"
 
