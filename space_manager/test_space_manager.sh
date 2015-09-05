@@ -62,15 +62,10 @@ function test_space_manager() {
 	local space_avail=$( python3 available_space.py )
 
 	local files_to_delete=("${files[@]:0:$4}")
-	echo "files to delete: ${files_to_delete[@]}" >> "test_log.txt"
 	local files_to_keep=("${files[@]:$4}")
-	echo "files to keep: ${files_to_keep[@]}" >> "test_log.txt"
 
 	local space_needed=$(( $space_avail + $(( $dummy_file_size * ${#files_to_delete[@]} ))))
-	echo "space_needed: $space_needed" >> "test_log.txt"
-
 	local initial_space=$( $raspi_base_path/space_manager/space_manager.sh "$space_needed" )
-	echo "inital space from sm: $initial_space" >> test_log.txt
 	
 	if [[ $initial_space -eq $space_avail ]]; then
 		# no erros
@@ -98,12 +93,6 @@ function error_check() {
 	local files=("${!3}")
 	local num_files="${#files[@]}"
 
-	echo "inital space: $1" >> test_log.txt
-	echo "space_needed; $2" >> test_log.txt
-	echo "net_space: $net_space" >> "test_log.txt"
-	echo "files: ${files[@]}" >> "test_log.txt"
-	echo "num_files $num_files" >> "test_log.txt"
-
 	# this gets rid of negative error
 	if [[ $net_space -lt 0 ]]; then
 		net_space=0
@@ -111,19 +100,14 @@ function error_check() {
 	
 	# TODO:	dont hardcode size of file
 	local num_files_to_delete=$( python -c "from math import ceil; print int(ceil($net_space/4.0))" )
-	echo "error num_files_to delete: $num_files_to_delete" >> "test_log.txt"
 	
 	# the most files that can be deleted is the amount created
 	if [[ $num_files_to_delete -gt $num_files ]]; then
 		num_files_to_delete=$num_files	
 	fi
 
-	echo "error num_files_to delete2: $num_files_to_delete" >> "test_log.txt"
-
 	local files_to_delete=("${files[@]:0:$num_files_to_delete}")
-	echo "files to delete: ${files_to_delete[@]}" >> "test_log.txt"
 	local files_to_keep=("${files[@]:$num_files_to_delete}")
-	echo "files to keep: ${files_to_keep[@]}" >> "test_log.txt"
 
 	success=$( space_manager_success files_to_keep[@] files_to_delete[@] )
 
@@ -144,7 +128,7 @@ function space_manager_success() {
 	for f in "${kept_files[@]}"; do
 		# if file does not exist then there was a problem
 		if [[ ! -e "$f" ]]; then
-			echo "$f which shouldn't have been deleted isn't there" >> "test_log.txt"
+			echo "$f which shouldn't have been deleted isn't there"
 			success="false"
 			break
 		fi
@@ -158,15 +142,13 @@ function space_manager_success() {
 	local len="${#deletion_log[@]}"
 
 	if [[ $len -ne "${#deleted_files[@]}" ]]; then
-		echo "size of the deletion log isn't the same as the files to be deleted arr" >> "test_log.txt"
-		echo "deletion log has $len elements and to_delete has ${#deleted_files[@]}" >> "test_log.txt"
+		echo "log has $len elements but to_delete has ${#deleted_files[@]}"
 		success="false"
 	fi
 
 	for ((i=0; i<"$len"; i++ )); do
 		if [[ "${deleted_files[i]}" != "${deletion_log[i]}" ]]; then
 			echo "deleted files don't match deletion log"
-			echo "deleted files: ${deleted_files[@]}  , deletion log: ${deletion_log[@]}"
 			success="false"
 			break
 		fi
