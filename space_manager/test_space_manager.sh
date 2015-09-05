@@ -17,26 +17,29 @@ avail_space_diff="false"
 # must be empty
 function main() {
 	local passed="true"
+	local t=0
 
   	for (( i=0; i<$1; i++ )); do
 		for (( j=0; j<$1; j++ )); do
 			for (( k=0; k<$1; k++ )); do
 				for (( d=0; d<=$(($i+$j+$k)); d++)); do
 					passed=$( test_space_manager $i $j $k $d )
-					if [[ $avail_space_diff == "true" ]]; then
-						echo "WARNING: available spaces differ"
-					elif [[ "$passed" != "true" ]]; then
-						echo "Failed with $i dbs, $j archives, $k backups, and $d files to delete"
-						avail_space_diff="false"
+					t=$(( $t + 1 )) 
+
+					if [[ "$passed" != "true" ]]; then
+						echo "FAILED with $i dbs, $j archives, $k backups , $d files to delete"
+						echo "passed: $passed"
 					fi
-					
-					if [[ $avail_space_diff == "true" && $passed == "true" ]]; then
-						echo "Passed test"	
+
+					if [[ $(( $t % 100 )) -eq  0 ]]; then
+						echo "$t tests run so far"	
 					fi
 				done
 			done
 		done
 	done
+
+	echo "testing complete"
 }
 
 
@@ -90,7 +93,6 @@ function test_space_manager() {
 # discrepency and false otherwise
 # args: $1 - inital space available, $2 - space needed, $3 - files created
 function error_check() {
-	echo "warning available spaces differ"
 	local success="not_set"
 	local net_space=$(( $2 - $1 ))
 	local files=("${!3}")
@@ -163,7 +165,7 @@ function space_manager_success() {
 
 	for ((i=0; i<"$len"; i++ )); do
 		if [[ "${deleted_files[i]}" != "${deletion_log[i]}" ]]; then
-			echo "deleted files don't match deletion log" >> "test_log.txt"
+			echo "deleted files don't match deletion log"
 			echo "deleted files: ${deleted_files[@]}  , deletion log: ${deletion_log[@]}"
 			success="false"
 			break
