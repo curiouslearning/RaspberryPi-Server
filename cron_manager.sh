@@ -5,12 +5,14 @@
 # Runs cronjobs for pi
 # 
 
-source /home/pi/RaspberryPi-Server/logger.sh
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+source "$raspi_base_path"/logger.sh
 
-space_manager="/home/pi/RaspberryPi-Server/space_manager/space_manager.sh"
-archiver="/home/pi/RaspberryPi-Server/archiver/archiver.sh"
+space_manager="$raspi_base_path/space_manager/space_manager.sh"
+archiver="$raspi_base_path/archiver/archiver.sh"
 
 
+# TODO: set this up and pull hardcodedd 5
 function main() {
 	run "$space_manager" 5
 	log_status $? "running space_manager from cron manager" "$space_manager_log"
