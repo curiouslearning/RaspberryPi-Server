@@ -10,25 +10,33 @@ source $raspi_base_path/config.sh
 source $raspi_base_path/array_intersect_utils.sh
 
 dummy_file_size=4 # in kb
+avail_space_diff="false"
 
 
 # warning for this test to work properly the directories used
 # must be empty
 function main() {
-	echo "$( test_space_manager 0 0 3 1 )"
+	local passed="true"
+
   	for (( i=0; i<$1; i++ )); do
 		for (( j=0; j<$1; j++ )); do
 			for (( k=0; k<$1; k++ )); do
 				for (( d=0; d<=$(($i+$j+$k)); d++)); do
-					echo "run with $i dbs $j arch $k backups $d files to delete" >> "test_log.txt"
-					output=$( test_space_manager $i $j $k $d )
-					echo "result: $output"
-					echo "output: $output             oprinted" >> "test_log.txt"
+					passed=$( test_space_manager $i $j $k $d )
+					if [[ $avail_space_diff == "true" ]]; then
+						echo "WARNING: available spaces differ"
+					elif [[ "$passed" != "true" ]]; then
+						echo "Failed with $i dbs, $j archives, $k backups, and $d files to delete"
+						avail_space_diff="false"
+					fi
+					
+					if [[ $avail_space_diff == "true" && $passed == "true" ]]; then
+						echo "Passed test"	
+					fi
 				done
 			done
 		done
 	done
-
 }
 
 
@@ -70,11 +78,9 @@ function test_space_manager() {
 			 sudo rm "${files_to_keep[@]}"
 		fi
 	else
-		echo "files b4 check: ${files[@]}" >> test_log.txt
-		echo "initial space b4 check: $initial_space" >> test_log.txt
-		echo "space_needed b4 check: $space_needed" >> test_log.txt
+		
 		success=$( error_check "$initial_space" "$space_needed" files[@] )
-
+		avail_space_diff="true"
 	fi
 	
 	echo "$success"
@@ -84,6 +90,7 @@ function test_space_manager() {
 # discrepency and false otherwise
 # args: $1 - inital space available, $2 - space needed, $3 - files created
 function error_check() {
+	echo "warning available spaces differ"
 	local success="not_set"
 	local net_space=$(( $2 - $1 ))
 	local files=("${!3}")
