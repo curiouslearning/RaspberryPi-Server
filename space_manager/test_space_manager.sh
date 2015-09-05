@@ -15,18 +15,22 @@ dummy_file_size=4 # in kb
 # warning for this test to work properly the directories used
 # must be empty
 function main() {
-	for (( i=0; i<$1; i++ )); do
+	echo "$( test_space_manager 0 0 3 1 )"
+  	for (( i=0; i<$1; i++ )); do
 		for (( j=0; j<$1; j++ )); do
 			for (( k=0; k<$1; k++ )); do
 				for (( d=0; d<=$(($i+$j+$k)); d++)); do
 					echo "run with $i dbs $j arch $k backups $d files to delete" >> "test_log.txt"
 					output=$( test_space_manager $i $j $k $d )
+					echo "result: $output"
 					echo "output: $output             oprinted" >> "test_log.txt"
 				done
 			done
 		done
 	done
+
 }
+
 
 
 # purp: test the normal functionality of the space manger 
@@ -51,10 +55,11 @@ function test_space_manager() {
 	local files_to_keep=("${files[@]:$4}")
 	echo "files to keep: ${files_to_keep[@]}" >> "test_log.txt"
 
-	local space_needed=$(( $space_avail + $(( $dummy_file_size * "${#files_to_delete[@]}" ))))
-	echo "space_needed final: $space_needed" >> "test_log.txt"
+	local space_needed=$(( $space_avail + $(( $dummy_file_size * ${#files_to_delete[@]} ))))
+	echo "space_needed: $space_needed" >> "test_log.txt"
 
 	local initial_space=$( $raspi_base_path/space_manager/space_manager.sh "$space_needed" )
+	echo "inital space from sm: $initial_space" >> test_log.txt
 	
 	if [[ $initial_space -eq $space_avail ]]; then
 		# no erros
@@ -65,7 +70,10 @@ function test_space_manager() {
 			 sudo rm "${files_to_keep[@]}"
 		fi
 	else
-		success=$( check_error $inital_space $space_needed $files )
+		echo "files b4 check: ${files[@]}" >> test_log.txt
+		echo "initial space b4 check: $initial_space" >> test_log.txt
+		echo "space_needed b4 check: $space_needed" >> test_log.txt
+		success=$( error_check "$initial_space" "$space_needed" files[@] )
 
 	fi
 	
@@ -77,9 +85,15 @@ function test_space_manager() {
 # args: $1 - inital space available, $2 - space needed, $3 - files created
 function error_check() {
 	local success="not_set"
+	local net_space=$(( $2 - $1 ))
 	local files=("${!3}")
 	local num_files="${#files[@]}"
-	local net_space=$(( $1 - $2 ))
+
+	echo "inital space: $1" >> test_log.txt
+	echo "space_needed; $2" >> test_log.txt
+	echo "net_space: $net_space" >> "test_log.txt"
+	echo "files: ${files[@]}" >> "test_log.txt"
+	echo "num_files $num_files" >> "test_log.txt"
 
 	# this gets rid of negative error
 	if [[ $net_space -lt 0 ]]; then
@@ -87,13 +101,15 @@ function error_check() {
 	fi
 	
 	# TODO:	dont hardcode size of file
-	local num_files_to_delete=$( python -c "from math import ceil; print int(ceil($net_space/4.0))"
-	echo "num_files_to delete: $num_files_to_delete" >> "test_log.txt"
+	local num_files_to_delete=$( python -c "from math import ceil; print int(ceil($net_space/4.0))" )
+	echo "error num_files_to delete: $num_files_to_delete" >> "test_log.txt"
 	
 	# the most files that can be deleted is the amount created
 	if [[ $num_files_to_delete -gt $num_files ]]; then
 		num_files_to_delete=$num_files	
 	fi
+
+	echo "error num_files_to delete2: $num_files_to_delete" >> "test_log.txt"
 
 	local files_to_delete=("${files[@]:0:$num_files_to_delete}")
 	echo "files to delete: ${files_to_delete[@]}" >> "test_log.txt"
@@ -127,7 +143,7 @@ function space_manager_success() {
 
 	# check that all the files that should have been deleted were
 	# get array of files in the order they were deleted by sm
-	deletion_log=($( open_file "deleted_files.txt" )) # TODO create tag
+	local deletion_log=($( open_file "deleted_files.txt" )) # TODO create tag
 	echo "" > deleted_files.txt
 
 	local len="${#deletion_log[@]}"
