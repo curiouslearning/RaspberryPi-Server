@@ -20,9 +20,11 @@ source "$raspi_base_path"/counter.sh
 source "$raspi_base_path"/logger.sh
 source "$raspi_base_path"/array_intersect_utils.sh
 
+archiver_log="archiver/archiver_log.txt"
+
 
 function main() {
-	log_status 0 "running archiver_cleanup on $(date)" "archiver/archiver_log.txt"
+	log_status 0 "running archiver_cleanup on $(date)" "$archiver_log"
 
 	# failure to remove files
 	if [[ $( num_files_in_dir "$archive_dir" ) -gt 0 && 
@@ -41,6 +43,7 @@ function main() {
 
 		# delete intersection 
 		sudo rm ${duplicates[@]} 
+		log_status $? "removing duplicates from data dir" "$archiver_log"
 	fi
 
 	# if tar was incompelete
@@ -49,6 +52,7 @@ function main() {
 		sudo rm $archiver_temp*
 		# run archiver again
 		sudo "$raspi_base_path"/archiver/archiver.sh
+		log_status $? "finishing incomplete archiver process" "$archiver_log"
 	fi
 	
 	exit
