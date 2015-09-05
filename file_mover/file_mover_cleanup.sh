@@ -12,24 +12,26 @@
 # By Jason Krone for Curious Learning
 # Date: July 31, 2015
 
-source ../config.sh
-source ../counter.sh
-source ../array_intersect_utils.sh
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+source $raspi_base_path/config.sh
+source $raspi_base_path/counter.sh
+source $raspi_base_path/array_intersect_utils.sh
+source $raspi_base_path/logger.sh
+
+
+file_mover_log="/file_mover/file_mover_log.txt"
 
 
 function main() {
-	echo "running file_mover_cleanup on $( date )" >> file_mover_log.txt
+	log_status 0 "running file_mover_cleanup on $( date )" "$file_mover_log"
 
 	# error with file transfer process and usb is inserted
 	if [[ $( mount | grep /mnt/usb ) != "" && 
 	      $( num_files_in_dir "$file_mover_temp" ) -gt 0 ]]; then
-		echo "files in temp and usb mounted" >> file_mover_log.txt
-		./file_mover.sh
+		"$raspi_base_path"/file_mover/file_mover.sh
+		log_status $? "cleaning up after error in transfer process for usb" "$file_mover_log"
 	fi
 
-
-	# temp should also be empty for this to be the case
-	# checking temp may avoid previous prolem in testing
 	# see if removal of backedup files was incomplete
 	if [[ $( num_files_in_dir "$backup_dir" ) -gt 0 &&
 	      $( num_files_in_dir "$archive_dir" ) -gt 0 ]]; then
@@ -41,6 +43,8 @@ function main() {
 
 		# remove any duplicates
 		sudo rm ${duplicates[@]}
+
+		log_status $? "removing duplicates from incomplete file mover process" "$file_mover_log"
 	fi
 
 	exit
