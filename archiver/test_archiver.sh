@@ -8,8 +8,8 @@
 raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
 
 source "$raspi_base_path"/config.sh
-source "$raspi_base_path"/counter.sh
-source "$raspi_base_path"/array_intersect_utils.sh
+source "$raspi_base_path"/utils/counter.sh
+source "$raspi_base_path"/utils/cleanup_utils.sh
 
 
 # Warning: these tests need to be run in a clean environment
