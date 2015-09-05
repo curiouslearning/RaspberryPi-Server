@@ -13,9 +13,10 @@ source $raspi_base_path/utils/counter.sh
 
 
 space_manager_log="/space_manager/space_manager_log.txt"
-in_test_mode="true" # TODO: get rid of this.. just see if param present
+in_test_mode="false" 
 
 
+# runs in test mode if passed a parameter for space needed
 function main() {
 	log_status 0 "running space manager on $(date)" "$space_manager_log"
 	local space_needed=0
@@ -24,11 +25,13 @@ function main() {
 	local initial_space="$( python3 $raspi_base_path/space_manager/available_space.py )"
 	local space_avail=$initial_space
 
-	# TODO check using param1
-	if [[ "$in_test_mode" == "true" ]]; then
+	# in test mode if passed a parameter
+	if [[ ! -z $1 ]]; then
 		# $1 is minimum space required in test mode
 		space_needed=$1
+		in_test_mode="true"
 	else
+		echo "not in test mode"
 		space_needed=$min_required_space
 	fi
 
@@ -41,7 +44,10 @@ function main() {
 		space_avail=$(( $space_avail + $space_created ))
 	done
 
-	echo "$initial_space" # for testing purposes
+	if [[ $in_test_mode == "true" ]]; then
+		echo "$initial_space" # for testing purposes
+	fi
+
 	exit "$success_making_space"
 }
 
