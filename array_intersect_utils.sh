@@ -5,8 +5,8 @@
 #
 
 # TODO: change location of dummy file
-base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-dummy_file="/home/pi/RaspberryPi-Server/archiver/dummy_file"
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+dummy_file="$raspi_base_path/archiver/dummy_file"
 source $base_path/counter.sh
 
 
