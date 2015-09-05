@@ -14,9 +14,10 @@
 
 # TODO: put some more logging in here
 
-source ../config.sh
-source ../counter.sh
-source ../array_intersect_utils.sh
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+source "$raspi_base_path"/config.sh
+source "$raspi_base_path"/counter.sh
+source "$raspi_base_path"/array_intersect_utils.sh
 
 
 function main() {
@@ -46,7 +47,7 @@ function main() {
 		# remove incomplete tars
 		sudo rm $archiver_temp*
 		# run archiver again
-		sudo ./archiver.sh
+		sudo "$raspi_base_path"/archiver/archiver.sh
 	fi
 	
 	exit

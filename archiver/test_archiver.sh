@@ -5,7 +5,7 @@
 # tests archiver
 #
 
-raspi_base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
 
 source "$raspi_base_path"/config.sh
 source "$raspi_base_path"/counter.sh

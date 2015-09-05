@@ -7,11 +7,11 @@
 # exits with 0 if successful and another number otherwise
 #
 
-raspi_base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && cd .. && pwd )
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
 source "$raspi_base_path/config.sh
 
 
-arc_cleanup="archiver_cleanup.sh"
+arc_cleanup="$raspi_base_path/archiver/archiver_cleanup.sh"
 arc_cleanup_boot="/etc/init.d/archiver_cleanup.sh"
 
 
