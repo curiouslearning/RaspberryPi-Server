@@ -17,11 +17,12 @@
 raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
 source "$raspi_base_path"/config.sh
 source "$raspi_base_path"/counter.sh
+source "$raspi_base_path"/logger.sh
 source "$raspi_base_path"/array_intersect_utils.sh
 
 
 function main() {
-	echo "running archiver_cleanup on $(date)" >> archiver_log.txt
+	log_status 0 "running archiver_cleanup on $(date)" "archiver/archiver_log.txt"
 
 	# failure to remove files
 	if [[ $( num_files_in_dir "$archive_dir" ) -gt 0 && 

@@ -31,7 +31,7 @@ success=$(($success|$?))
 
 
 # set archiver_cleanup.sh to be run on boot
-sudo mv "$arc_cleanup" "$arc_cleanup_boot" 
+sudo cp "$arc_cleanup" "$arc_cleanup_boot" 
 success=$(($success|$?))
 sudo chmod 777 "$arc_cleanup_boot"
 success=$(($success|$?))
