@@ -9,8 +9,10 @@ ACTION=$(expr "$ACTION" : "\([a-zA-Z]\+\).*")
 
 raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
 source $raspi_base_path/config.sh
+source $raspi_base_path/utils/logger.sh
 
 tablet_update_script="/mnt/usb/globallit_tablet_updates.sh"
+file_mover_log="file_mover/file_mover_log.txt"
 
 
 function main() {
