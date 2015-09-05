@@ -6,7 +6,7 @@
 #
 
 # grab path to RaspberryPi-Server dir
-raspi_base_path=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
 
 
 # purp: appends message with the given body to the given file
