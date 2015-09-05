@@ -17,9 +17,9 @@ archiver_log="archiver/archiver_log.txt"
 
 function main() {
 	run "$space_manager" $max_failures
-	log_status $? "running space_manager from cron manager" "$space_manager_log"
+	log_status $? "running space_manager from cron manager $( date )" "$space_manager_log"
 	run "$archiver" $max_failures	
-	log_status $? "running archiver from cron manager" "$archiver_log"
+	log_status $? "running archiver from cron manager $( date )" "$archiver_log"
 }
 
 
