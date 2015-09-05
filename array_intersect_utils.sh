@@ -6,8 +6,9 @@
 
 # TODO: change location of dummy file
 raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+source "$raspi_base_path"/counter.sh
+
 dummy_file="$raspi_base_path/archiver/dummy_file"
-source $base_path/counter.sh
 
 
 # purp: creates the given number of dummy files
