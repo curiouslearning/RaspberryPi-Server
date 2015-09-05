@@ -31,7 +31,6 @@ function main() {
 		space_needed=$1
 		in_test_mode="true"
 	else
-		echo "not in test mode"
 		space_needed=$min_required_space
 	fi
 
