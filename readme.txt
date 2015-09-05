@@ -24,19 +24,16 @@ file_mover:
     - Moves archived tablet data to inserted USB stick, then 
     backs up transfered files, and deletes the backed up archives
 
+utils:
+    - contains utility functions used for logging, counting files,
+      manipulating arrays, and clearing directories used in testing.
 
 build.sh:
-	- To be run inially to install the server on the pi and create all 
+    - To be run inially to install the server on the pi and create all 
 	necessary directories...etc 
 
-
 config.sh:
-	- single point of truth for directories used in multiple scripts
-
-
-logger.sh
-	- contains function to log messages associated with exit status
-
+    - single point of truth for directories used in multiple scripts
 
 Note: 
     - setup files in each directory are to be run at build time for the
@@ -64,7 +61,4 @@ Note:
 - Syntax for passing array to function 		array[@]
   Syntax for getting array param		param=("${!1}") # replace 1 with param number
 
-
-
-        
 

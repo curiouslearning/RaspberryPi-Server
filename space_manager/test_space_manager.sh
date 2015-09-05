@@ -7,7 +7,7 @@
 
 raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
 source $raspi_base_path/config.sh
-source $raspi_base_path/array_intersect_utils.sh
+source $raspi_base_path/utils/cleanup_utils.sh
 
 
 removed_log="$raspi_base_path/space_manager/deleted_files.txt"
