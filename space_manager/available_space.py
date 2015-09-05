@@ -11,8 +11,8 @@ import time
 AVAILABLE_SPACE_INDEX = 10
 
 def main():
-	# pause for deletions, TODO: find a better way
-	time.sleep(1)
+	# pause for deletions
+	time.sleep(.05)
 	space = avail_space()	
 	print(space)
 
@@ -33,5 +33,6 @@ def avail_space():
     # extract available space field as int
     avail_kb = int(decoded_output.split()[AVAILABLE_SPACE_INDEX])
     return avail_kb
+
 
 main()
