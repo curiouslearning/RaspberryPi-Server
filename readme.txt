@@ -50,6 +50,8 @@ Note:
 - usb_id file in file_mover directory must be on usb inserted into
   raspberry pi if you want files to be moved to that usb
 
+- name of update script that will be run if on usb is in config
+
 - Directories used by tests must be empty when tests are run
   USB must be plugged into pi when running file_mover tests
 
