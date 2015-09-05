@@ -47,6 +47,8 @@ Note:
 
 - Build script must be run from inside the build directory
 
+- You can check if a build was successful by looking at the build log
+
 - usb_id file in file_mover directory must be on usb inserted into
   raspberry pi if you want files to be moved to that usb
 
