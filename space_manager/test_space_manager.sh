@@ -5,9 +5,12 @@
 # Tests the space manger
 #
 
-source /home/pi/RaspberryPi-Server/config.sh
-source /home/pi/RaspberryPi-Server/array_intersect_utils.sh
-test_success="never_set"
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+source $raspi_base_path/config.sh
+source $raspi_base_path/array_intersect_utils.sh
+
+dummy_file_size=4 # in kb
+
 
 # warning for this test to work properly the directories used
 # must be empty
@@ -25,10 +28,6 @@ function main() {
 	done
 }
 
-function main2() {
-	echo "ye"
-}
-
 
 # purp: test the normal functionality of the space manger 
 # creating the given number of input filesa;sdjkfas
@@ -37,7 +36,6 @@ function main2() {
 function test_space_manager() {
 	# get space	
 	local success="never_set"
-
 		
 	# the order of the following lines matters
 	local files=()
@@ -45,32 +43,69 @@ function test_space_manager() {
 	files+=($( create_dummy_files "$2" ".tar.gz" "$archive_dir" ))
 	files+=($( create_dummy_files "$1" ".db" "$data_dir" ))
 	
-	#echo "files created: ${files[@]}"
-
-	local space_needed=$( python3 available_space.py )
+	# get space after files are created	
+	local space_avail=$( python3 available_space.py )
 
 	local files_to_delete=("${files[@]:0:$4}")
 	echo "files to delete: ${files_to_delete[@]}" >> "test_log.txt"
-
 	local files_to_keep=("${files[@]:$4}")
 	echo "files to keep: ${files_to_keep[@]}" >> "test_log.txt"
-	
-	# we will have only have enough extra space for the files to keep 
-	for f in "${files_to_delete[@]}"; do
-		space_needed=$(( $space_needed+4 )) # $( du "$f" | cut -f1 ) ))
-	done
+
+	local space_needed=$(( $space_avail + $(( $dummy_file_size * "${#files_to_delete[@]}" ))))
 	echo "space_needed final: $space_needed" >> "test_log.txt"
 
-	# run the space manager with space needed
-	./space_manager.sh "$space_needed" "$4" # TODO: remove extra param
-		
+	local initial_space=$( $raspi_base_path/space_manager/space_manager.sh "$space_needed" )
+	
+	if [[ $initial_space -eq $space_avail ]]; then
+		# no erros
+		success=$( space_manager_success files_to_keep[@] files_to_delete[@] )
+
+		# cleanup i.e. remove files kept
+		if [[ "${#files_to_keep[@]}" -gt 0 ]]; then
+			 sudo rm "${files_to_keep[@]}"
+		fi
+	else
+		success=$( check_error $inital_space $space_needed $files )
+
+	fi
+	
+	echo "$success"
+}
+
+# purp: returns true if the space manager corretly handled the space
+# discrepency and false otherwise
+# args: $1 - inital space available, $2 - space needed, $3 - files created
+function error_check() {
+	local success="not_set"
+	local files=("${!3}")
+	local num_files="${#files[@]}"
+	local net_space=$(( $1 - $2 ))
+
+	# this gets rid of negative error
+	if [[ $net_space -lt 0 ]]; then
+		net_space=0
+	fi
+	
+	# TODO:	dont hardcode size of file
+	local num_files_to_delete=$( python -c "from math import ceil; print int(ceil($net_space/4.0))"
+	echo "num_files_to delete: $num_files_to_delete" >> "test_log.txt"
+	
+	# the most files that can be deleted is the amount created
+	if [[ $num_files_to_delete -gt $num_files ]]; then
+		num_files_to_delete=$num_files	
+	fi
+
+	local files_to_delete=("${files[@]:0:$num_files_to_delete}")
+	echo "files to delete: ${files_to_delete[@]}" >> "test_log.txt"
+	local files_to_keep=("${files[@]:$num_files_to_delete}")
+	echo "files to keep: ${files_to_keep[@]}" >> "test_log.txt"
+
 	success=$( space_manager_success files_to_keep[@] files_to_delete[@] )
 
-	# cleanup i.e. remove files kept
 	if [[ "${#files_to_keep[@]}" -gt 0 ]]; then
 		 sudo rm "${files_to_keep[@]}"
 	fi
-	
+
 	echo "$success"
 }
 
