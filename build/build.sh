@@ -26,8 +26,12 @@ function main() {
 	log_status $? "setting up file_mover" "$build_log_path"
 
 	# setup cronjobs TODO: modify paths for cron jobs
+	local tab="0 * * * * $raspi_base_path/cron_manager.sh"
+	echo "$tab" > ../pi_server_crontab
 	crontab ../pi_server_crontab
 	log_status $? "setting up crontab" "$build_log_path"
+
+	sudo reboot
 }
 
 main

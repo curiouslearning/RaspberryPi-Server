@@ -1,3 +1,1 @@
-0 * * * * /home/pi/RaspberryPi-Server/space_manager/space_manager.sh
-0 * * * * /home/pi/RaspberryPi-Server/archiver/archiver.sh
-
+0 * * * * /home/pi/RaspberryPi-Server/cron_manager.sh

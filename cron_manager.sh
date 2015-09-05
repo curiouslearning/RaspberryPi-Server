@@ -7,18 +7,21 @@
 
 raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
 source "$raspi_base_path"/logger.sh
+source "$raspi_base_path"/config.sh
 
 space_manager="$raspi_base_path/space_manager/space_manager.sh"
 archiver="$raspi_base_path/archiver/archiver.sh"
+space_manager_log="space_manager/space_manager_log.txt"
+archiver_log="archiver/archiver_log.txt"
 
 
-# TODO: set this up and pull hardcodedd 5
 function main() {
-	run "$space_manager" 5
+	run "$space_manager" $max_failures
 	log_status $? "running space_manager from cron manager" "$space_manager_log"
-	run "$archiver" 5	
+	run "$archiver" $max_failures	
 	log_status $? "running archiver from cron manager" "$archiver_log"
 }
+
 
 function run() {
 	failures=0

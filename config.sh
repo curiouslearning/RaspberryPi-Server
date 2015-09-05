@@ -21,3 +21,7 @@ backup_dir="/mnt/s3/tabletdata_backups/"
 
 # space manager
 min_required_space=1000000 # in kb = 1GB
+
+
+# cron manager
+max_failures=5
