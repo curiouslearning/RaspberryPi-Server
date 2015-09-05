@@ -18,7 +18,6 @@ source $raspi_base_path/counter.sh
 source $raspi_base_path/array_intersect_utils.sh
 source $raspi_base_path/logger.sh
 
-
 file_mover_log="/file_mover/file_mover_log.txt"
 
 

@@ -5,9 +5,10 @@
 # Moves archived tablet data to USB stick, then adds moved archives to backups
 #
 
-source ../logger.sh
-source ../counter.sh
-source ../config.sh
+raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
+source $raspi_base_path/config.sh
+source $raspi_base_path/counter.sh
+source $raspi_base_path/logger.sh
 
 file_mover_log_path="file_mover/file_mover_log.txt"
 
