@@ -28,7 +28,7 @@ function main() {
 	if [[ $( mount | grep /mnt/usb ) != "" && 
 	      $( num_files_in_dir "$file_mover_temp" ) -gt 0 ]]; then
 		"$raspi_base_path"/file_mover/file_mover.sh
-		log_status $? "cleaning up after error in transfer process for usb" "$file_mover_log"
+		log_status $? "cleaning up after error in transfer to usb" "$file_mover_log"
 	fi
 
 	# see if removal of backedup files was incomplete
