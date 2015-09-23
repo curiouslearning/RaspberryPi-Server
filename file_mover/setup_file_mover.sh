@@ -11,12 +11,12 @@
 #
 
 raspi_base_path=$( cat /usr/RaspberryPi-Server/base_path.txt )
-source $base_path/config.sh
+source $raspi_base_path/config.sh
 
 fm_cleanup="$base_path/file_mover/file_mover_cleanup.sh"
 fm_cleanup_boot="/etc/init.d/file_mover_cleanup.sh"
 usb_rules="$raspi_base_path/file_mover/10-usbstick.rules"
-usb_key="$raspi_base_path/file_mover/usbkey.sh
+usb_key="$raspi_base_path/file_mover/usbkey.sh"
 
 success=0
 
