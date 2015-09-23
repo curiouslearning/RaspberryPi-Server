@@ -23,7 +23,7 @@ success=$(($success|$?))
 # swap index.html for our index.php (might want that path in config) 
 sudo rm /var/www/index.html
 success=$(($success|$?))
-sudo mv index.php /var/www/index.php
+sudo mv $raspi_base_path/webserver/index.php /var/www/index.php
 success=$(($success|$?))
 sudo chmod 755 /var/www/index.php   # check that this is necessary
 success=$(($success|$?))
