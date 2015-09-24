@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 # setup_file_mover.sh
 # By Jason Krone for Curious Learning
 # Date: June 18, 2015
