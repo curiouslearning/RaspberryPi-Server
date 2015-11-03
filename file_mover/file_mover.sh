@@ -10,7 +10,7 @@ source $raspi_base_path/config.sh
 source $raspi_base_path/utils/counter.sh
 source $raspi_base_path/utils/logger.sh
 
-file_mover_log="file_mover/file_mover_log.txt"
+file_mover_log="$raspi_base_path/file_mover/file_mover_log.txt"
 
 
 function main() {
